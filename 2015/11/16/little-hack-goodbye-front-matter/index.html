@@ -1,0 +1,148 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 摆脱 hexo-front-matter · M-x codefalling</title><meta name="description" content="摆脱 hexo-front-matter - codefalling"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div id="mask" style="display: none;"><img id="mask-image" src="#" style=" "></div><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/codefalling" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">摆脱 hexo-front-matter</h1><div class="post-time">Nov 16, 2015</div><div class="post-content">
+
+<script>
+  function editAtGithub(isRaw){
+    var url_parts = document.location.pathname.split('/');
+    var postname = url_parts[url_parts.length - 2];
+    if(url_parts.length == 3){ // is a page(wiki about etc)
+      postname = postname + '/index.org';
+    }else{
+      postname = '_posts/' + postname + '.org';
+    }
+    var url = 'https://github.com/CodeFalling/codefalling.com/tree/source/source/' + postname;
+    if(isRaw)
+      url = 'https://raw.githubusercontent.com/CodeFalling/codefalling.com/source/source/' + postname;
+    window.open(url);
+  }
+</script>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">hexo-front-matter</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<code>hexo</code> &#x5C31;&#x4E0D;&#x9700;&#x8981;&#x518D;&#x4ECB;&#x7ECD;&#x4E86;&#xFF0C;&#x662F;&#x4E2A;&#x5F88;&#x6709;&#x540D;&#x7684;&#x9759;&#x6001;&#x535A;&#x5BA2;&#x751F;&#x6210;&#x5668;&#x3002;&#x548C;&#x5F88;&#x591A;&#x9759;&#x6001;&#x535A;&#x5BA2;&#x751F;&#x6210;&#x5668;&#x4E00;&#x6837;&#xFF0C;hexo &#x9009;&#x62E9; <code>front-matter</code> &#x6765;&#x8BFB;&#x53D6;&#x6587;&#x7AE0;&#x7684;&#x5143;&#x6570;&#x636E;&#xFF0C;&#x4F8B;&#x5982;&#x6807;&#x9898;&#xFF0C;&#x65E5;&#x671F;&#x7B49;&#xFF0C;&#x7A76;&#x5176;&#x539F;&#x56E0;&#x662F;&#x56E0;&#x4E3A; <code>markdown</code> &#x6CA1;&#x6709;&#x529E;&#x6CD5;&#x8868;&#x793A;&#x8FD9;&#x4E9B;&#x4FE1;&#x606F;&#x3002;&#x6211;&#x4EEC;&#x7ECF;&#x5E38;&#x53EF;&#x4EE5;&#x5728;&#x5404;&#x79CD;&#x6587;&#x7AE0;&#x7684;&#x5934;&#x90E8;&#x770B;&#x5230;&#x5B83;&#x4EEC;
+</p>
+
+<p>
+&#x867D;&#x7136;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x6709;&#x6240;&#x4E89;&#x8BAE;&#xFF08;&#x56E0;&#x4E3A;&#x8FD9;&#x6837;&#x5C31;&#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x6807;&#x51C6;&#x7684; md &#x6587;&#x4EF6;&#x4E86;&#xFF09;&#xFF0C;&#x4F46;&#x662F;&#x5BF9;&#x4E8E; md &#x6CA1;&#x6709;&#x66F4;&#x597D;&#x7684;&#x9009;&#x62E9;&#xFF0C;&#x76F8;&#x5173;&#x7684;&#x6587;&#x6863;&#x548C;&#x8BA8;&#x8BBA;&#x5728; <a href="https://hexo.io/docs/front-matter.html" target="_blank" rel="external">Front-matter | Hexo</a> &#x53EF;&#x4EE5;&#x770B;&#x5230;&#x3002;&#x6240;&#x4EE5;&#x7EC8;&#x7A76; hexo &#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x4E86;&#x8FD9;&#x79CD;&#x65B9;&#x5F0F;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">orgmode &#x4E0D;&#x9700;&#x8981; front-matter</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+<code>orgmode</code> &#x4E0D;&#x540C;&#x4E8E;&#x8FFD;&#x6C42;&#x7B80;&#x6D01;&#x7684; <code>markdown</code> &#xFF0C;&#x672C;&#x8EAB;&#x5C31;&#x6709;&#x8868;&#x793A;&#x6587;&#x7AE0;&#x5143;&#x4FE1;&#x606F;&#x7684;&#x65B9;&#x5F0F;&#xFF0C;&#x4E00;&#x4E2A;&#x5178;&#x578B;&#x7684; <code>orgmode</code> &#x6587;&#x7AE0;&#x53EF;&#x4EE5;&#x8FD9;&#x6837;&#x8868;&#x793A;
+</p>
+
+<pre class="example">
+#+TITLE: hexo&#xFF1A;&#x6446;&#x8131; hexo-front-matter
+#+DATE: &lt;2015-11-16 Mon 22:12&gt;
+#+LAYOUT: post
+#+TAGS: emacs,hexo,org-mode,hexo-renderer-org
+#+CATEGORIES: EMACS
+&#x6587;&#x7AE0;&#x5185;&#x5BB9;
+</pre>
+
+<p>
+&#x4F46;&#x662F; hexo &#x4ECE;&#x4E00;&#x5F00;&#x59CB;&#x5C31;&#x6CA1;&#x8003;&#x8651;&#x8FC7;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x6240;&#x4EE5;&#x5E76;&#x6CA1;&#x6709;&#x63D0;&#x4F9B;&#x6539;&#x53D8;&#x8BFB;&#x53D6;&#x5143;&#x4FE1;&#x606F;&#x7684;&#x63A5;&#x53E3;&#xFF0C;&#x4F46;&#x662F;&#x6211;&#x7814;&#x7A76;&#x4E86;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#x540E;&#x53D1;&#x73B0;&#x4E00;&#x4E9B; hack &#x53EF;&#x4EE5;&#x505A;&#x5230;&#x3002;
+</p>
+
+<a id="more"></a>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">hack</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">hexo.extend.filter.register</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+<code>hexo</code> &#x63D0;&#x4F9B;&#x4E86;&#x63D2;&#x4EF6;&#x7684; API &#x53EF;&#x4EE5;&#x5728;&#x6E32;&#x67D3;&#x524D;/&#x540E;&#x518D;&#x5BF9;&#x7ED3;&#x679C;&#x505A;&#x4E00;&#x4E9B;&#x5904;&#x7406;&#x3002;
+</p>
+
+<p>
+&#x901A;&#x8FC7;
+</p>
+<div class="org-src-container">
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">hexo.extend.filter.register(<span class="string">&apos;before_post_render&apos;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>{</span><br><span class="line">  <span class="built_in">console</span>.log(data)</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">});</span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
+&#x628A; <code>data</code> &#x6253;&#x5370;&#x51FA;&#x6765;&#x53EF;&#x4EE5;&#x770B;&#x5230; <code>title</code> <code>tags</code> <code>content</code> &#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>content</code> &#x8BFB;&#x53D6;&#x5143;&#x4FE1;&#x606F;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x5199;&#x56DE; <code>data</code> &#x91CC;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">DateTime</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+<code>Orgmode</code> &#x4E2D;&#x4F7F;&#x7528; <code>org-time-stamp</code> &#x6765;&#x63D2;&#x5165;&#x65F6;&#x95F4;&#x6233;&#xFF0C;&#x7ED3;&#x679C;&#x7C7B;&#x4F3C; <code>&lt;2015-11-16 Mon 22:40&gt;</code> &#xFF08;&#x4F3C;&#x4E4E;&#x53EF;&#x4EE5;&#x914D;&#x7F6E;&#x6210;&#x5176;&#x4ED6;&#x683C;&#x5F0F;&#x548C;&#x4E2D;&#x6587;&#x7B49;&#xFF09;&#xFF0C;&#x53EA;&#x8981;&#x628A;&#x975E;&#x6570;&#x5B57;&#x548C; <code>:-</code> &#x66FF;&#x6362;&#x6210;&#x7A7A;&#x683C;&#x5C31;&#x80FD;&#x88AB; <code>Date.parse</code> &#x76F4;&#x63A5;&#x8BC6;&#x522B;&#x3002;
+</p>
+
+<div class="org-src-container">
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Date</span>(<span class="built_in">Date</span>.parse(org_time.replace(<span class="regexp">/[^0-9:-]/g</span>, <span class="string">&apos; &apos;</span>)))</span><br></pre></td></tr></table></figure>
+</div>
+
+<p>
+&#x9664;&#x6B64;&#x4E4B;&#x5916;&#xFF0C; <code>hexo</code> &#x9700;&#x8981;&#x4E00;&#x4E2A; <code>format</code> &#x51FD;&#x6570;&#x6765;&#x8C03;&#x7528;<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup>&#x3002;
+</p>
+
+<div class="org-src-container">
+
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">if</span> (!<span class="built_in">Date</span>.prototype.format) {</span><br><span class="line">  <span class="built_in">Date</span>.prototype.format = <span class="function"><span class="keyword">function</span>(<span class="params">fmt</span>) </span>{ <span class="comment">// Hexo need this</span></span><br><span class="line">    <span class="keyword">var</span> o = {</span><br><span class="line">      <span class="string">&quot;M+&quot;</span>: <span class="keyword">this</span>.getMonth() + <span class="number">1</span>,</span><br><span class="line">      <span class="string">&quot;d+&quot;</span>: <span class="keyword">this</span>.getDate(),</span><br><span class="line">      <span class="string">&quot;h+&quot;</span>: <span class="keyword">this</span>.getHours(),</span><br><span class="line">      <span class="string">&quot;m+&quot;</span>: <span class="keyword">this</span>.getMinutes(),</span><br><span class="line">      <span class="string">&quot;s+&quot;</span>: <span class="keyword">this</span>.getSeconds(),</span><br><span class="line">      <span class="string">&quot;q+&quot;</span>: <span class="built_in">Math</span>.floor((<span class="keyword">this</span>.getMonth() + <span class="number">3</span>) / <span class="number">3</span>),</span><br><span class="line">      <span class="string">&quot;S&quot;</span>: <span class="keyword">this</span>.getMilliseconds()</span><br><span class="line">    };</span><br><span class="line">    <span class="keyword">if</span> (<span class="regexp">/(y+)/</span>.test(fmt)) fmt = fmt.replace(<span class="built_in">RegExp</span>.$<span class="number">1</span>, (<span class="keyword">this</span>.getFullYear() + <span class="string">&quot;&quot;</span>).substr(<span class="number">4</span> - <span class="built_in">RegExp</span>.$<span class="number">1.</span>length));</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> k <span class="keyword">in</span> o)</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">new</span> <span class="built_in">RegExp</span>(<span class="string">&quot;(&quot;</span> + k + <span class="string">&quot;)&quot;</span>).test(fmt)) fmt = fmt.replace(<span class="built_in">RegExp</span>.$<span class="number">1</span>, (<span class="built_in">RegExp</span>.$<span class="number">1.</span>length == <span class="number">1</span>) ? (o[k]) : ((<span class="string">&quot;00&quot;</span> + o[k]).substr((<span class="string">&quot;&quot;</span> + o[k]).length)));</span><br><span class="line">    <span class="keyword">return</span> fmt;</span><br><span class="line">  };</span><br><span class="line">}</span><br></pre></td></tr></table></figure>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">tags &#x548C; categories</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+&#x8FD9;&#x662F;&#x6700;&#x5934;&#x75BC;&#x7684;&#x4E24;&#x4E2A;&#x5C5E;&#x6027;&#x4E86;&#xFF0C;&#x5B83;&#x4EEC;&#x4E0D;&#x80FD;&#x76F4;&#x63A5;&#x8BBE;&#x7F6E;&#xFF0C;&#x4F46;&#x662F;&#x6211;&#x5728; <a href="https://github.com/hexojs/hexo/blob/b4172d6c15fc9782b6b522f65e9c202ff548dcc7/lib/models/post.js" target="_blank" rel="external">hexo/post.js at b4172d6c15fc9782b6b522f65e9c202ff548dcc7 &#xB7; hexojs/hexo</a> &#x4E2D;&#x627E;&#x5230;&#x4E86;&#x4E00;&#x4E9B;&#x4FE1;&#x606F;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x7528;&#x7C7B;&#x4F3C; <code>data.setTags([&apos;tag1&apos;, &apos;tag2&apos;])</code> &#x8FD9;&#x6837;&#x7684;&#x65B9;&#x6CD5;&#x6539;&#x53D8;&#x6587;&#x7AE0;&#x7684; tag&#x3002;
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">&#x95EE;&#x9898;</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+tag &#x7684;&#x7EDF;&#x8BA1;&#x6570;&#x636E;&#x6BD4;&#x9884;&#x671F;&#x5927;&#x5F88;&#x591A;&#xFF0C;&#x4F3C;&#x4E4E;&#x662F;&#x91CD;&#x590D;&#x7684;&#x4F1A;&#x53E0;&#x52A0;&#x6B21;&#x6570;&#xFF0C;&#x539F;&#x56E0;&#x4E0D;&#x8BE6;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5">&#x5B9E;&#x73B0;</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+&#x76EE;&#x524D;&#x5728; <a href="https://github.com/CodeFalling/hexo-renderer-org" target="_blank" rel="external">CodeFalling/hexo-renderer-org</a> &#x4E2D;&#x5DF2;&#x7ECF;&#x5B9E;&#x73B0;&#x4E86;&#x8FD9;&#x4E2A;&#x65B9;&#x6CD5;&#xFF0C;&#x4EE5;&#x540E;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x7528; <code>orgmode</code> &#x7684;&#x5199;&#x6CD5;&#xFF0C;&#x6446;&#x8131;&#x4F5C;&#x4E3A;&#x6743;&#x76CA;&#x4E4B;&#x8BA1;&#x7684; <code>front-matter</code> &#x3002;
+</p>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p>hexo &#x8868;&#x793A;&#x65F6;&#x95F4;&#x7684;&#x7C7B;&#x578B;&#x4E0D;&#x662F; Date&#xFF0C;&#x800C;&#x662F; <a href="https://github.com/hexojs/hexo/blob/534102e6992bfb4df975a724846993617edcf988/lib/models/types/moment.js" target="_blank" rel="external">hexo/moment.js at 534102e6992bfb4df975a724846993617edcf988 &#xB7; hexojs/hexo</a></p></div>
+
+
+</div>
+</div>
+<div style="font-size: 14px;padding: 5px;line-height: 20px;border: 1px solid;"><a href="javascript: editAtGithub();" target="_blank" rel="external">Edit Me at Github</a> - <a href="javascript: editAtGithub(true)" target="_blank" rel="external">Org Source</a> - Last Updated 2016-04-21 &#x56DB; 19:49.<br>Render by <a href="https://github.com/CodeFalling/hexo-renderer-org" target="_blank" rel="external">hexo-renderer-org</a> with <a href="http://www.gnu.org/software/emacs/" target="_blank" rel="external">Emacs</a> 25.0.92.1 (<a href="http://orgmode.org" target="_blank" rel="external">Org</a> mode 8.2.10)</div>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/11/17/org-octopress-with-hexo-org/" class="prev">PREV</a><a href="/2015/11/15/new-version-of-hexo-renderer-org/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'codefalling';
+var disqus_identifier = '2015/11/16/little-hack-goodbye-front-matter/';
+var disqus_title = '摆脱 hexo-front-matter';
+var disqus_url = 'http://codefalling.com/2015/11/16/little-hack-goodbye-front-matter/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//codefalling.disqus.com/count.js" async></script><div class="copyright"><p>© 2016 <a href="http://codefalling.com">codefalling</a>, unless otherwise noted.</p></div></footer></div><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-72449503-1",'auto');ga('send','pageview');</script><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>

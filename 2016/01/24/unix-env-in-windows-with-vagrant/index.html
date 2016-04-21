@@ -1,0 +1,113 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 利用 Vagrant 搭建 Windows 下的 Unix 环境 · M-x codefalling</title><meta name="description" content="利用 Vagrant 搭建 Windows 下的 Unix 环境 - codefalling"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div id="mask" style="display: none;"><img id="mask-image" src="#" style=" "></div><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/codefalling" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">利用 Vagrant 搭建 Windows 下的 Unix 环境</h1><div class="post-time">Jan 24, 2016</div><div class="post-content">
+
+<script>
+  function editAtGithub(isRaw){
+    var url_parts = document.location.pathname.split('/');
+    var postname = url_parts[url_parts.length - 2];
+    if(url_parts.length == 3){ // is a page(wiki about etc)
+      postname = postname + '/index.org';
+    }else{
+      postname = '_posts/' + postname + '.org';
+    }
+    var url = 'https://github.com/CodeFalling/codefalling.com/tree/source/source/' + postname;
+    if(isRaw)
+      url = 'https://raw.githubusercontent.com/CodeFalling/codefalling.com/source/source/' + postname;
+    window.open(url);
+  }
+</script>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">&#x80CC;&#x666F;</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Windows &#x662F;&#x4E00;&#x4E2A;&#x575A;&#x5B9E;&#x53EF;&#x9760;&#x7684;&#x64CD;&#x4F5C;&#x7CFB;&#x7EDF;&#xFF0C;&#x53C8;&#x6709;&#x975E;&#x5E38;&#x5B8C;&#x5584;&#x7684;&#x8F6F;&#x4EF6;&#x751F;&#x6001;&#xFF0C;&#x4F46;&#x5176; *nix &#x517C;&#x5BB9;&#x6027;&#x4E00;&#x76F4;&#x4E3A;&#x4EBA;&#x8BDF;&#x75C5;&#xFF0C;&#x867D;&#x7136; <code>cygwin</code> <code>msys</code> <code>msys2</code> <code>babun</code> &#x7B49;&#x5DE5;&#x5177;&#x5C42;&#x51FA;&#x4E0D;&#x7A77;&#xFF0C;&#x8BD5;&#x56FE;&#x4E3A; Windows &#x63D0;&#x4F9B;&#x4E00;&#x4E2A;&#x53EF;&#x7528;&#x7684; Unix &#x73AF;&#x5883;&#xFF0C;&#x4F46;&#x90FD;&#x53EA;&#x662F;&#x52C9;&#x5F3A;&#x80FD;&#x7528;&#xFF0C;&#x548C; wineqq &#x4E00;&#x4E2A;&#x5C3F;&#x6027;&#xFF0C;&#x662F;&#x65E0;&#x5948;&#x4E4B;&#x9009;&#x3002;
+</p>
+
+<p>
+&#x672C;&#x6765;&#x4F7F;&#x7528;&#x865A;&#x62DF;&#x673A; + ssh &#x7684;&#x65B9;&#x6848;&#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x547D;&#x4EE4;&#x884C;&#xFF0C;&#x7ED3;&#x679C;&#x65E0;&#x610F;&#x95F4;&#x53D1;&#x73B0; X11-forward &#x7684;&#x6548;&#x679C;&#x975E;&#x5E38;&#x68D2;&#xFF0C;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x5728; Windows &#x4E0B;&#x64CD;&#x4F5C;&#x865A;&#x62DF;&#x673A;&#x91CC;&#x7684;&#x7A97;&#x53E3;&#x3002;
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">&#x6548;&#x679C;</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+&#x8FD9;&#x662F;&#x8FD0;&#x884C;&#x5728;&#x865A;&#x62DF;&#x673A;&#x91CC;&#xFF0C;&#x4F46;&#x7A97;&#x53E3;&#x5374;&#x5728; Windows &#x4E0B;&#x7684; emacs&#x3002;
+<img src="/2016/01/24/unix-env-in-windows-with-vagrant/emacs-x11-forward.png" alt="emacs-x11-forward.png">
+</p>
+
+<a id="more"></a>
+</div>
+</div>
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">&#x5DE5;&#x5177;</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">VirtualBox</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+VirtualBox &#x662F;&#x4E00;&#x4E2A;&#x77E5;&#x540D;&#x7684;&#x5F00;&#x6E90;&#x865A;&#x62DF;&#x673A;&#xFF0C;&#x4EE5;&#x524D;&#x4E5F;&#x66FE;&#x5C1D;&#x8BD5;&#x8FC7;&#x76F4;&#x63A5;&#x4F7F;&#x7528; VirtualBox &#x5728; Windows &#x4E0B;&#x5B89;&#x88C5; Linux &#x865A;&#x62DF;&#x673A;&#x7136;&#x540E;&#x4ECE; ssh &#x767B;&#x5F55;&#xFF0C;&#x4F46;&#x6BCF;&#x6B21;&#x90FD;&#x8981;&#x624B;&#x52A8;&#x53BB;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x5171;&#x4EAB;&#xFF0C;&#x7F51;&#x7EDC;&#x7B49;&#x95EE;&#x9898;&#x975E;&#x5E38;&#x70E6;&#x4EBA;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">Vagrant</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Vagrant &#x662F;&#x4E2A;&#x975E;&#x5E38;&#x68D2;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#xFF0C;&#x4F9D;&#x6258;&#x4E8E; VirtualBox &#x53EF;&#x4EE5;&#x63D0;&#x4F9B;&#x975E;&#x5E38;&#x65B9;&#x4FBF;&#x7684;&#x865A;&#x62DF;&#x673A;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x3002;&#x5C24;&#x5176;&#x662F;&#x6587;&#x4EF6;&#x5171;&#x4EAB;&#x548C;&#x7F51;&#x7EDC;&#x914D;&#x7F6E;&#x90FD;&#x53EF;&#x4EE5;&#x5728;&#x4E00;&#x4E2A;&#x914D;&#x7F6E;&#x6587;&#x4EF6;&#x91CC;&#x76F4;&#x63A5;&#x5199;&#x597D;&#xFF0C; <code>vagrant up</code> &#x5C31;&#x53EF;&#x4EE5;&#x5728;&#x540E;&#x53F0;&#x542F;&#x52A8;&#x865A;&#x62DF;&#x673A;&#xFF0C;&#x7136;&#x540E;&#x4F7F;&#x7528;&#x81EA;&#x5DF1;&#x7684; ssh &#x5BA2;&#x6237;&#x7AEF;&#x5C31;&#x53EF;&#x4EE5; ssh &#x5230;&#x865A;&#x62DF;&#x673A;&#x3002;
+</p>
+
+<p>
+&#x6CE8;&#xFF1A;&#x4F60;&#x9700;&#x8981;&#x4E00;&#x4E2A;&#x901F;&#x5EA6;&#x591F;&#x5FEB;&#x7684;&#x68AF;&#x5B50;&#xFF0C;&#x5426;&#x5219;&#x5B89;&#x88C5; box &#x7684;&#x8FC7;&#x7A0B;&#x4F1A;&#x5F88;&#x75DB;&#x82E6;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-3" class="outline-3">
+<h3 id="sec-3-3">MobaXterm</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+&#x8FD9;&#x662F;&#x6211;&#x5728; Windows &#x4E0B;&#x80FD;&#x627E;&#x5230;&#x7684;&#x6700;&#x597D;&#x7528;&#x7684; ssh client &#x4E86;&#xFF0C;&#x867D;&#x7136;&#x8FD8;&#x6709;&#x8BF8;&#x591A;&#x8BA9;&#x6211;&#x4E0D;&#x6EE1;&#x610F;&#x7684;&#x5730;&#x65B9;&#xFF08;&#x4F8B;&#x5982;&#x8BF4;&#x4E0D;&#x80FD;&#x5B9A;&#x5236; fallback font&#xFF09;&#xFF0C;&#x4F46;&#x7EFC;&#x5408;&#x6765;&#x8BF4;&#x975E;&#x5E38;&#x597D;&#x7528;&#x3002;&#x81EA;&#x5E26;&#x901A;&#x8FC7; scp &#x7684;&#x6587;&#x4EF6;&#x7BA1;&#x7406;&#x548C;&#x8DB3;&#x591F;&#x597D;&#x7528;&#x7684; X11 Server&#xFF08;&#x8FD9;&#x70B9;&#x5F88;&#x91CD;&#x8981;&#xFF09;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3-4" class="outline-3">
+<h3 id="sec-3-4">fcitx</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+&#x6700;&#x60CA;&#x8BB6;&#x7684;&#x662F; fcitx &#x5728; X11 forward &#x4E2D;&#x5C45;&#x7136;&#x4E5F;&#x80FD;&#x6B63;&#x5E38;&#x5DE5;&#x4F5C;&#xFF0C;&#x53EF;&#x4EE5;&#x901A;&#x8FC7; <code>fcitx-configtools</code> &#x6765;&#x8FDB;&#x884C;&#x914D;&#x7F6E;&#xFF0C;&#x8BB0;&#x5F97;&#x4FEE;&#x6539;&#x73AF;&#x5883;&#x53D8;&#x91CF;&#x548C;&#x542F;&#x52A8; <code>fcitx -d &amp;</code> &#xFF08;&#x56E0;&#x4E3A;&#x865A;&#x62DF;&#x673A;&#x91CC;&#x6CA1;&#x88C5;&#x684C;&#x9762;&#x73AF;&#x5883;&#x5E76;&#x4E0D;&#x4F1A;&#x81EA;&#x52A8;&#x542F;&#x52A8;&#xFF09;&#x3002;&#x540C;&#x65F6; <code>fcitx.el</code> &#x4E5F;&#x5DE5;&#x4F5C;&#x7684;&#x975E;&#x5E38;&#x5B8C;&#x7F8E;&#x3002;
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4">&#x4F18;&#x70B9;</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+&#x8FD9;&#x6837;&#x505A;&#x76F8;&#x5BF9;&#x5176;&#x4ED6;&#x7684;&#x65B9;&#x6848;&#x7684;&#x4F18;&#x70B9;&#xFF0C;&#x4E3B;&#x8981;&#x5728;
+</p>
+
+<ul class="org-ul">
+<li>&#x5B8C;&#x6574;&#x7684; Linux &#x73AF;&#x5883;&#xFF0C;&#x800C;&#x4E0D;&#x662F;&#x5404;&#x79CD;&#x6B8B;&#x7F3A;&#x4E0D;&#x5168;&#x7684;&#x6A21;&#x62DF;&#xFF0C;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x5F88;&#x591A;
+</li>
+<li>&#x539F;&#x6765; Linux GUI &#x4E0B;&#x7684;&#x4E1C;&#x897F;&#x5C45;&#x7136;&#x4E5F;&#x80FD;&#x901A;&#x8FC7; X11 forward &#x5B8C;&#x7F8E;&#x5DE5;&#x4F5C;&#xFF0C;&#x8FD9;&#x70B9;&#x8BA9;&#x6211;&#x5F88;&#x60CA;&#x559C;&#xFF0C;&#x4F8B;&#x5982; <code>fcitx-remote</code> &#x5728; Windows &#x4E0B;&#x76EE;&#x524D;&#x8FD8;&#x6CA1;&#x6709;&#x7B49;&#x4EF7;&#x7684;&#x66FF;&#x4EE3;&#x54C1;&#xFF0C;&#x800C;&#x5982;&#x6B64;&#x4E00;&#x6765;&#x5B8C;&#x5168;&#x53EF;&#x4EE5;&#x65E0;&#x969C;&#x788D;&#x7684;&#x4F7F;&#x7528;
+</li>
+<li>&#x540C;&#x6837;&#x5B8C;&#x6574;&#x7684; Windows &#x73AF;&#x5883;&#xFF0C;Windows &#x5C31;&#x4E0D;&#x7528;&#x591A;&#x8BF4;&#x4E86;&#xFF0C;&#x4E30;&#x5BCC;&#x7684;&#x684C;&#x9762;&#x8F6F;&#x4EF6;&#xFF0C;&#x548C;&#x786C;&#x4EF6;&#x7684;&#x5951;&#x5408;&#x5EA6;&#xFF0C;&#x4EE5;&#x53CA;&#x5404;&#x79CD;&#x6E38;&#x620F;
+</li>
+</ul>
+</div>
+</div>
+
+<div style="font-size: 14px;padding: 5px;line-height: 20px;border: 1px solid;"><a href="javascript: editAtGithub();" target="_blank" rel="external">Edit Me at Github</a> - <a href="javascript: editAtGithub(true)" target="_blank" rel="external">Org Source</a> - Last Updated 2016-04-21 &#x56DB; 19:49.<br>Render by <a href="https://github.com/CodeFalling/hexo-renderer-org" target="_blank" rel="external">hexo-renderer-org</a> with <a href="http://www.gnu.org/software/emacs/" target="_blank" rel="external">Emacs</a> 25.0.92.1 (<a href="http://orgmode.org" target="_blank" rel="external">Org</a> mode 8.2.10)</div>
+</div></article></div></section><footer><div class="paginator"><a href="/2016/03/22/fake-rest-in-es5/" class="prev">PREV</a><a href="/2015/12/19/no-pains-with-hexo-local-image/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'codefalling';
+var disqus_identifier = '2016/01/24/unix-env-in-windows-with-vagrant/';
+var disqus_title = '利用 Vagrant 搭建 Windows 下的 Unix 环境';
+var disqus_url = 'http://codefalling.com/2016/01/24/unix-env-in-windows-with-vagrant/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//codefalling.disqus.com/count.js" async></script><div class="copyright"><p>© 2016 <a href="http://codefalling.com">codefalling</a>, unless otherwise noted.</p></div></footer></div><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-72449503-1",'auto');ga('send','pageview');</script><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>

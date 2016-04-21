@@ -1,0 +1,177 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> 完整特性的 hexo-renderer-org · M-x codefalling</title><meta name="description" content="完整特性的 hexo-renderer-org - codefalling"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div id="mask" style="display: none;"><img id="mask-image" src="#" style=" "></div><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/codefalling" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><div class="post"><article class="post-block"><h1 class="post-title">完整特性的 hexo-renderer-org</h1><div class="post-time">Nov 15, 2015</div><div class="post-content">
+
+<script>
+  function editAtGithub(isRaw){
+    var url_parts = document.location.pathname.split('/');
+    var postname = url_parts[url_parts.length - 2];
+    if(url_parts.length == 3){ // is a page(wiki about etc)
+      postname = postname + '/index.org';
+    }else{
+      postname = '_posts/' + postname + '.org';
+    }
+    var url = 'https://github.com/CodeFalling/codefalling.com/tree/source/source/' + postname;
+    if(isRaw)
+      url = 'https://raw.githubusercontent.com/CodeFalling/codefalling.com/source/source/' + postname;
+    window.open(url);
+  }
+</script>
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">hexo-renderer-org</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+<a href="https://github.com/CodeFalling/hexo-renderer-org" target="_blank" rel="external">CodeFalling/hexo-renderer-org</a> &#x662F;&#x6211;&#x4E4B;&#x524D;&#x7ED9; hexo &#x5F00;&#x53D1;&#x7684;&#x4E00;&#x4E2A;&#x652F;&#x6301; orgmode &#x7684;&#x6E32;&#x67D3;&#x5668;&#x63D2;&#x4EF6;&#xFF0C;&#x53EF;&#x4EE5;&#x8BA9; hexo &#x80FD;&#x591F;&#x76F4;&#x63A5;&#x50CF;&#x652F;&#x6301; markdown &#x4E00;&#x6837;&#x652F;&#x6301; orgmode&#x3002;&#x5728;&#x6211;&#x4E4B;&#x524D;&#x7684;&#x6587;&#x7AE0;&#x4E2D;&#x66FE;&#x6709;&#x4ECB;&#x7ECD;&#xFF1A;<a href="http://codefalling.com/2015/10/25/use-orgmode-with-hexo/">&#x5728; Hexo &#x4E2D;&#x4F7F;&#x7528; Orgmode | M-x codefalling</a> &#x3002;
+</p>
+</div>
+
+<div id="outline-container-sec-1-1" class="outline-3">
+<h3 id="sec-1-1">&#x5B58;&#x5728;&#x7684;&#x95EE;&#x9898;</h3>
+<div class="outline-text-3" id="text-1-1">
+<p>
+hexo-renderer-org &#x4E4B;&#x524D;&#x4F7F;&#x7528; <a href="https://github.com/mooz/org-js" target="_blank" rel="external">mooz/org-js</a> &#x4F5C;&#x4E3A;&#x6E32;&#x67D3;&#x6838;&#x5FC3;&#xFF0C;&#x4F46;&#x662F; orgjs &#x672C;&#x8EAB;&#x7684;&#x7279;&#x6027;&#x5E76;&#x4E0D;&#x5B8C;&#x6574;&#xFF0C;&#x800C;&#x4E14;&#x4F5C;&#x8005;&#x7684;&#x5F00;&#x53D1;&#x4F3C;&#x4E4E;&#x8D8B;&#x4E8E;&#x505C;&#x6B62;&#xFF0C;&#x5BFC;&#x81F4;&#x5F88;&#x591A;&#x7279;&#x6027;&#x4E0D;&#x80FD;&#x5F88;&#x597D;&#x7684;&#x4F7F;&#x7528;&#xFF08;&#x4F8B;&#x5982;&#x811A;&#x6CE8;&#xFF09;&#xFF0C;&#x6216;&#x8005;&#x4F1A;&#x78B0;&#x5230;&#x4E00;&#x4E9B;&#x5947;&#x602A;&#x7684;&#x95EE;&#x9898;&#xFF08;&#x89C1; issues&#xFF1A;<a href="https://github.com/mooz/org-js/issues" target="_blank" rel="external">Issues &#xB7; mooz/org-js</a>&#xFF09;&#x3002;
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">&#x65B0;&#x7248;&#x672C;</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+&#x65B0;&#x7248;&#x7684; hexo-renderer-org &#x76F4;&#x63A5;&#x4F7F;&#x7528;&#x5F53;&#x524D;&#x673A;&#x5668;&#x4E0A;&#x7684; emacs &#x8FDB;&#x884C;&#x6E32;&#x67D3;&#xFF0C;&#x7075;&#x611F;&#x6765;&#x81EA;&#x4E8E;&#x4E00;&#x884C;&#x547D;&#x4EE4;&#x4F7F;&#x7528; emacs export org2html&#xFF1A;<a href="http://stackoverflow.com/questions/22072773/batch-export-of-org-mode-files-from-the-command-line" target="_blank" rel="external">emacs - Batch export of org-mode files from the command line - Stack Overflow</a> &#x3002;&#x5B9E;&#x9645;&#x7684;&#x505A;&#x6CD5;&#x662F;&#x4F20;&#x7ED9; emacs &#x4E00;&#x6BB5; emacs-lisp &#x5E72;&#x6389; yaml &#x7684;&#x6587;&#x4EF6;&#x5934;&#xFF08;hexo &#x5F3A;&#x5236;&#x4F7F;&#x7528; yaml &#x6587;&#x4EF6;&#x5934;&#x6765;&#x8BFB;&#x53D6;&#x4E00;&#x4E9B;&#x5143;&#x4FE1;&#x606F;&#xFF0C;&#x4F8B;&#x5982;&#x6807;&#x9898;&#xFF0C;tag &#x7B49;&#xFF09;&#xFF0C;&#x7136;&#x540E; export &#x5230; html &#x5E76;&#x4E14;&#x8FD4;&#x56DE;&#x7ED9; node&#x3002;
+</p>
+
+<a id="more"></a>
+</div>
+<div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">&#x4F18;&#x70B9;</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li>&#x62E5;&#x6709;&#x5B8C;&#x6574;&#x7684; emacs org-mode &#x7279;&#x6027;
+</li>
+<li>&#x7D27;&#x8DDF; org-mode &#x5B98;&#x65B9;&#x7684;&#x66F4;&#x65B0;&#xFF08;&#x53EA;&#x8981;&#x4F60;&#x5B89;&#x88C5;&#x6700;&#x65B0;&#x7248;&#x672C;&#x7684; emacs &#x5373;&#x53EF;&#xFF09;
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">&#x7F3A;&#x70B9;</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+&#x6BD4;&#x4E4B;&#x524D;&#x7684;&#x7248;&#x672C;&#x6162;&#x4E0A;&#x4E0D;&#x5C11;&#xFF0C;&#x4E0D;&#x8FC7;&#x8FD8;&#x5728;&#x53EF;&#x4EE5;&#x63A5;&#x53D7;&#x7684;&#x8303;&#x56F4;&#x5185;
+</p>
+
+<p>
+&#x4E0D;&#x8FC7;&#x5728;&#x6539;&#x4E3A;&#x5F02;&#x6B65; renderer &#x540E;&#xFF0C;&#x6574;&#x4F53;&#x7684;&#x6E32;&#x67D3;&#x901F;&#x5EA6;&#x5FEB;&#x4E86;&#x4E00;&#x500D;&#x591A;&#xFF0C;&#x6211;&#x76EE;&#x524D;&#x5341;&#x4E00;&#x7BC7;&#x6587;&#x7AE0;&#x5728; clean &#x540E; 3.7s &#x5C31;&#x6E32;&#x67D3;&#x5B8C;&#x6210;&#xFF0C;&#x800C;&#x4E4B;&#x524D;&#x9700;&#x8981; 7.88s&#x3002;&#xFF08;&#x5F53;&#x7136;&#x751F;&#x6210;&#x5199;&#x5165;&#x6587;&#x4EF6;&#x8FD8;&#x9700;&#x8981;&#x65F6;&#x95F4;&#xFF09;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-3" class="outline-3">
+<h3 id="sec-2-3">&#x5B89;&#x88C5;</h3>
+<div class="outline-text-3" id="text-2-3">
+<p>
+&#x8FDB;&#x5165; hexo &#x535A;&#x5BA2;&#x7684;&#x76EE;&#x5F55;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x4E4B;&#x524D;&#x7684;&#x7248;&#x672C;&#x5148;&#x5378;&#x8F7D;&#x6389;&#x4E4B;&#x524D;&#x7684;&#xFF0C; <code>npm uninstall hexo-renderer-org --save</code>
+</p>
+
+<div class="org-src-container">
+
+<figure class="highlight"><table><tr><td class="code"><pre><span class="line">npm install https://github.com/CodeFalling/hexo-renderer-org#emacs --save</span><br></pre></td></tr></table></figure>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-2-4" class="outline-3">
+<h3 id="sec-2-4">&#x914D;&#x7F6E;</h3>
+<div class="outline-text-3" id="text-2-4">
+<p>
+&#x4E4B;&#x524D;&#x7684; <code>toc</code> &#x9009;&#x9879;&#x4E0D;&#x518D;&#x5B58;&#x5728;&#xFF0C;&#x56E0;&#x4E3A;&#x5728;&#x5B8C;&#x6574;&#x7684; orgmode &#x4E2D;&#x4F60;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x4F7F;&#x7528; <code>#+OPTION:</code> &#x914D;&#x7F6E;&#x4F60;&#x9700;&#x8981;&#x7684;&#x4E00;&#x5207;&#x3002;&#x552F;&#x4E00;&#x9700;&#x8981;&#x914D;&#x7F6E;&#x7684;&#x662F;
+</p>
+
+<pre class="example">
+org:
+  emacs: &apos;/Applications/Emacs.app/Contents/MacOS/Emacs&apos;
+</pre>
+
+<p>
+&#x8FD9;&#x91CC;&#x5199;&#x7684;&#x662F; <code>emacs for osx</code> &#x9ED8;&#x8BA4;&#x7684;&#x4F4D;&#x7F6E;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x914D;&#x7F6E;&#x8FD9;&#x4E00;&#x9879;&#x5B83;&#x4F1A;&#x4ECE; <code>PATH</code> &#x4E2D;&#x5BFB;&#x627E; emacs&#x3002;&#x6CE8;&#x610F; <b>OS X &#x81EA;&#x5E26;&#x7684; emacs &#x7248;&#x672C;&#x592A;&#x4F4E;&#xFF0C;&#x65E0;&#x6CD5;&#x505A;&#x6B64;&#x7528;&#x9014;</b>
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-5" class="outline-3">
+<h3 id="sec-2-5">&#x6A21;&#x677F;</h3>
+<div class="outline-text-3" id="text-2-5">
+<pre class="example">
+title: Title here
+date: 2015-10-25 19:25:01
+tags:
+- emacs
+- hexo
+---
+* Orgmode
+** Why orgmode
+#+BEGIN_SRC js
+  consol.log(&quot;hello&quot;);
+#+END_SRC
+
+&#x6211;&#x7F16;&#x4E0D;&#x4E0B;&#x53BB;&#x4E86;&#x3002;&#x3002;
+</pre>
+</div>
+</div>
+<div id="outline-container-sec-2-6" class="outline-3">
+<h3 id="sec-2-6">&#x9650;&#x5236;</h3>
+<div class="outline-text-3" id="text-2-6">
+<p>
+<code>htmlize.el</code> &#x65E0;&#x6CD5;&#x4F7F;&#x7528;&#xFF08;&#x4E0D;&#x8FC7; highlight.js &#x5DE5;&#x4F5C;&#x7684;&#x5F88;&#x597D;&#xFF0C;hexo &#x9ED8;&#x8BA4;&#x4E5F;&#x4F7F;&#x7528; highlight.js&#xFF09;<sup><a id="fnr.1" name="fnr.1" class="footref" href="#fn.1">1</a></sup>
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3">some trick</h2>
+<div class="outline-text-2" id="text-3">
+</div><div id="outline-container-sec-3-1" class="outline-3">
+<h3 id="sec-3-1">&#x9996;&#x9875;&#x5C4F;&#x853D; toc</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+toc &#x5728;&#x9996;&#x9875;&#x7684;&#x6587;&#x7AE0;&#x9884;&#x89C8;&#x91CC;&#x5E38;&#x5E38;&#x5360;&#x7528;&#x5927;&#x91CF;&#x7684;&#x4F4D;&#x7F6E;&#xFF08;&#x800C;&#x4E14;&#x6B64;&#x65F6;&#x7784;&#x70B9;&#x4E0D;&#x80FD;&#x5DE5;&#x4F5C;&#xFF09;&#xFF0C;&#x6240;&#x4EE5;&#x53EF;&#x4EE5;&#x5728;&#x9996;&#x9875;&#x5C4F;&#x853D;&#x6389;&#xFF0C;&#x53EA;&#x8981;&#x5728;&#x5BF9;&#x5E94;&#x7684; theme &#x7684; index &#x6A21;&#x677F;&#x7684;&#x5BF9;&#x5E94;&#x4F4D;&#x7F6E;&#x52A0;&#x4E0A;&#x3002;
+</p>
+
+<div class="org-src-container">
+
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">script</span>&gt;</span><span class="javascript"></span><br><span class="line"> <span class="built_in">document</span>.addEventListener(<span class="string">&quot;DOMContentLoaded&quot;</span>, <span class="function"><span class="keyword">function</span>(<span class="params">event</span>) </span>{</span><br><span class="line">     $(<span class="string">&apos;div#table-of-contents&apos;</span>).hide()</span><br><span class="line">});</span><br><span class="line"></span><span class="tag">&lt;/<span class="title">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</div>
+</div>
+</div>
+
+<div id="outline-container-sec-3-2" class="outline-3">
+<h3 id="sec-3-2">emacs</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+emacs &#x6709;&#x5173;&#x7684;&#x547D;&#x4EE4;&#x5728;&#x4E0A;&#x7BC7;&#x6587;&#x7AE0;&#x5DF2;&#x7ECF;&#x6709;&#x6240;&#x4ECB;&#x7ECD;&#xFF1A;<a href="http://codefalling.com/2015/10/25/use-orgmode-with-hexo/#sec-4">&#x5728; Hexo &#x4E2D;&#x4F7F;&#x7528; Orgmode | M-x codefalling</a>&#x3002;
+</p>
+</div>
+</div>
+</div>
+<div id="footnotes">
+<h2 class="footnotes">Footnotes: </h2>
+<div id="text-footnotes">
+
+<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p>&#x6709;&#x5174;&#x8DA3;&#x7684;&#x540C;&#x5B66;&#x53EF;&#x4EE5;&#x770B;&#x770B; <a href="http://stackoverflow.com/questions/3591337/emacs-htmlize-in-batch-mode" target="_blank" rel="external">http://stackoverflow.com/questions/3591337/emacs-htmlize-in-batch-mode</a></p></div>
+
+
+</div>
+</div>
+<div style="font-size: 14px;padding: 5px;line-height: 20px;border: 1px solid;"><a href="javascript: editAtGithub();" target="_blank" rel="external">Edit Me at Github</a> - <a href="javascript: editAtGithub(true)" target="_blank" rel="external">Org Source</a> - Last Updated 2016-04-21 &#x56DB; 19:49.<br>Render by <a href="https://github.com/CodeFalling/hexo-renderer-org" target="_blank" rel="external">hexo-renderer-org</a> with <a href="http://www.gnu.org/software/emacs/" target="_blank" rel="external">Emacs</a> 25.0.92.1 (<a href="http://orgmode.org" target="_blank" rel="external">Org</a> mode 8.2.10)</div>
+</div></article></div></section><footer><div class="paginator"><a href="/2015/11/16/little-hack-goodbye-front-matter/" class="prev">PREV</a><a href="/2015/11/13/use-emacs-to-renderer-org-in-command-line/" class="next">NEXT</a></div><div id="disqus_thread"></div><script>var disqus_shortname = 'codefalling';
+var disqus_identifier = '2015/11/15/new-version-of-hexo-renderer-org/';
+var disqus_title = '完整特性的 hexo-renderer-org';
+var disqus_url = 'http://codefalling.com/2015/11/15/new-version-of-hexo-renderer-org/';
+(function() {
+    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//codefalling.disqus.com/count.js" async></script><div class="copyright"><p>© 2016 <a href="http://codefalling.com">codefalling</a>, unless otherwise noted.</p></div></footer></div><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-72449503-1",'auto');ga('send','pageview');</script><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>

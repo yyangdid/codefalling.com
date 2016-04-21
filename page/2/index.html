@@ -1,0 +1,75 @@
+<!DOCTYPE html><html lang="zh-Hans"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> M-x codefalling</title><meta name="description" content="A Blog Powered By Hexo"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="short icon" href="/favicon.png"><link rel="stylesheet" href="/css/apollo.css"><link rel="stylesheet" href="http://fonts.useso.com/css?family=Source+Sans+Pro:400,600" type="text/css"></head><body><div id="mask" style="display: none;"><img id="mask-image" src="#" style=" "></div><div class="wrap"><header><a href="/" class="logo-link"><img src="/favicon.png"></a><ul class="nav nav-list"><li class="nav-list-item"><a href="/" target="_self" class="nav-list-link active">BLOG</a></li><li class="nav-list-item"><a href="/archives/" target="_self" class="nav-list-link">ARCHIVE</a></li><li class="nav-list-item"><a href="https://github.com/codefalling" target="_blank" class="nav-list-link">GITHUB</a></li><li class="nav-list-item"><a href="/atom.xml" target="_self" class="nav-list-link">RSS</a></li></ul></header><section class="container"><ul class="home post-list"><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2015/10/25/use-orgmode-with-hexo/" class="post-title-link">在 Hexo 中使用 Orgmode</a></h2><div class="post-time">Oct 25, 2015</div><div class="post-content"><script>
+  function editAtGithub(isRaw){
+    var url_parts = document.location.pathname.split('/');
+    var postname = url_parts[url_parts.length - 2];
+    if(url_parts.length == 3){ // is a page(wiki about etc)
+      postname = postname + '/index.org';
+    }else{
+      postname = '_posts/' + postname + '.org';
+    }
+    var url = 'https://github.com/CodeFalling/codefalling.com/tree/source/source/' + postname;
+    if(isRaw)
+      url = 'https://raw.githubusercontent.com/CodeFalling/codefalling.com/source/source/' + postname;
+    window.open(url);
+  }
+</script>
+
+
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1">&#x80CC;&#x666F;</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+&#x6211;&#x6700;&#x8FD1;&#x521A;&#x521A;&#x5F00;&#x59CB;&#x6298;&#x817E;&#x4E2A;&#x4EBA;&#x535A;&#x5BA2;&#xFF0C;&#x56E0;&#x4E3A;&#x5BF9; <code>Node.js</code> &#x5F88;&#x611F;&#x5174;&#x8DA3;&#xFF0C;&#x52A0;&#x4E0A;&#x4E00;&#x4E9B;&#x5F88;&#x597D;&#x770B;&#x7684;&#x4E3B;&#x9898;&#xFF0C;&#x6240;&#x4EE5;&#x9009;&#x62E9;&#x4E86; <code>hexo</code> &#x3002;&#x800C;&#x672C;&#x4EBA;&#x53C8;&#x662F;&#x4E00;&#x540D; <code>emacs</code> &#x7C89;&#x4E1D;&#xFF0C;&#x4E8E;&#x662F;&#x6298;&#x817E;&#x4E86;&#x4E00;&#x4E2A;&#x4F7F;&#x7528; <code>emacs+orgmode+hexo</code> &#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x3002;&#x53EF;&#x4EE5;&#x5728; hexo &#x4E2D;&#x50CF;&#x4F7F;&#x7528; markdown &#x4E00;&#x6837;&#x4F7F;&#x7528; orgmode&#x3002;
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2">Orgmode</h2>
+<div class="outline-text-2" id="text-2">
+</div><div id="outline-container-sec-2-1" class="outline-3">
+<h3 id="sec-2-1">&#x4ECB;&#x7ECD;</h3>
+<div class="outline-text-3" id="text-2-1">
+<p>
+<a href="http://orgmode.org/">Orgmode</a> &#x662F; Emacs &#x4E0B;&#x4E00;&#x4E2A;&#x5F3A;&#x5927;&#x7684;&#x63D2;&#x4EF6;&#xFF0C;&#x66F4;&#x52A0;&#x786E;&#x5207;&#x7684;&#x8BF4;&#xFF0C;&#x5B83;&#x662F;&#x4E00;&#x79CD;&#x5F3A;&#x5927;&#x7684;&#x6807;&#x8BB0;&#x5F0F;&#x8BED;&#x8A00;&#xFF08;&#x7C7B;&#x4F3C; Markdown)&#xFF0C;&#x6B63;&#x5982;&#x5B98;&#x7F51;&#x7684;&#x4ECB;&#x7ECD;
+</p>
+
+<blockquote>
+<p>
+
+</p>
+
+
+<p>
+Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
+</p>
+</blockquote>
+
+<p>
+Orgmode &#x53EF;&#x4EE5;&#x7528;&#x6765;&#x505A;&#x7B14;&#x8BB0;&#xFF0C;&#x505A; GTD&#xFF0C;&#x5199;&#x4F5C;&#x7B49;&#x7B49;&#xFF0C;&#x800C;&#x8FD9;&#x4E00;&#x5207;&#x90FD;&#x57FA;&#x4E8E;&#x7EAF;&#x6587;&#x672C;&#xFF08;&#x8FD9;&#x70B9;&#x548C; Markdown &#x4E00;&#x81F4;&#xFF09;&#x3002;
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-2-2" class="outline-3">
+<h3 id="sec-2-2">&#x4E3A;&#x4EC0;&#x4E48;&#x4F7F;&#x7528; Orgmode</h3>
+<div class="outline-text-3" id="text-2-2">
+<p>
+&#x63D0;&#x5230;&#x6807;&#x8BB0;&#x5F0F;&#x8BED;&#x8A00;&#xFF0C;&#x5927;&#x5BB6;&#x53EF;&#x80FD;&#x7B2C;&#x4E00;&#x53CD;&#x5E94;&#x5C31;&#x662F; Markdown&#xFF0C;&#x7684;&#x786E;&#xFF0C;Markdown &#x5F97;&#x76CA;&#x4E8E;&#x793E;&#x533A;&#x7684;&#x53D1;&#x5C55;&#x548C;&#x672C;&#x8EAB;&#x7684;&#x8F7B;&#x4FBF;&#xFF0C;&#x5728;&#x7A0B;&#x5E8F;&#x5458;&#x4E2D;&#x51E0;&#x4E4E;&#x65E0;&#x4EBA;&#x4E0D;&#x77E5;&#x65E0;&#x4EBA;&#x4E0D;&#x6653;&#xFF0C;&#x90A3;&#x4E48;&#x6211;&#x4EEC;&#x4E3A;&#x4EC0;&#x4E48;&#x9009;&#x62E9; Orgmode &#x5462;
+</p>
+</div>
+<div id="outline-container-sec-2-2-1" class="outline-4">
+<h4 id="sec-2-2-1">&#x548C; Emacs &#x5951;&#x5408;</h4>
+<div class="outline-text-4" id="text-2-2-1">
+<p>
+Orgmode &#x662F;&#x5F88;&#x591A;&#x4EBA;&#x9009;&#x62E9; Emacs &#x7684;&#x7406;&#x7531;&#xFF0C;&#x5B83;&#x7684;&#x7406;&#x5FF5;&#x548C; Emacs &#x4E5F;&#x5F88;&#x76F8;&#x8FD1;&#xFF0C;&#x5F3A;&#x5927;&#x800C;&#x81EA;&#x7531;&#x3002;&#x5728; Emacs &#x4E2D;&#x4F60;&#x53EF;&#x4EE5;&#x83B7;&#x5F97; Orgmode &#x6700;&#x597D;&#x7684;&#x4F53;&#x9A8C;&#xFF0C;&#x5B9A;&#x5236;&#x81EA;&#x5DF1;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x63A7;&#x5236;&#x5982;&#x4F55;&#x622A;&#x56FE;&#x5E76;&#x63D2;&#x5165;&#x56FE;&#x7247;&#x7B49;&#xFF0C;&#x5F53;&#x7136; Vim &#x548C; Sublime Text &#x4E5F;&#x6709;&#x5176;&#x76F8;&#x5E94;&#x7684;&#x5B9E;&#x73B0;&#x3002;
+</p>
+</div>
+</div>
+<div id="outline-container-sec-2-2-2" class="outline-4">
+<h4 id="sec-2-2-2">&#x6BD4; Markdown &#x66F4;&#x5F3A;&#x5927;&#x548C;&#x7EDF;&#x4E00;</h4>
+<div class="outline-text-4" id="text-2-2-2">
+<p>
+Orgmode &#x5F97;&#x76CA;&#x4E8E;&#x8BBE;&#x8BA1;&#x7684;&#x8DB3;&#x591F;&#x5F3A;&#x5927;&#xFF08;&#x6807;&#x51C6;&#x7684; Markdown &#x5F88;&#x591A;&#x529F;&#x80FD;&#x786E;&#x5B9E;&#xFF0C;&#x73B0;&#x5728;&#x6D41;&#x884C;&#x7684;&#x5927;&#x591A;&#x4E3A;&#x5404;&#x79CD;&#x65B9;&#x8A00;&#xFF09;&#xFF0C;&#x548C;&#x8F83;&#x4E3A;&#x4E2D;&#x5FC3;&#x5316;&#x7684;&#x5F00;&#x53D1;&#xFF0C;&#x5177;&#x6709;&#x5341;&#x5206;&#x5B8C;&#x5907;&#x7684;&#x529F;&#x80FD;&#x548C;&#x7EDF;&#x4E00;&#x7684;&#x5B9E;&#x73B0;&#x3002;&#x8BF8;&#x5982;&#x94FE;&#x63A5;&#x5230;&#x67D0;&#x4E2A;&#x6587;&#x4EF6;&#x7684;&#x67D0;&#x4E00;&#x884C;&#x8FD9;&#x6837;&#x7684;&#x529F;&#x80FD;&#x7528; Orgmode &#x4E5F;&#x53EF;&#x4EE5;&#x5B9E;&#x73B0;&#x3002;
+</p></div></div></div></div></div><a href="/2015/10/25/use-orgmode-with-hexo/" class="read-more">...more</a></article></li><li class="post-list-item"><article class="post-block"><h2 class="post-title"><a href="/2015/10/18/MacGesture2-Publish/" class="post-title-link">MacGesture2.0发布了</a></h2><div class="post-time">Oct 18, 2015</div><div class="post-content"><h1 id="&#x4ECB;&#x7ECD;"><a href="#&#x4ECB;&#x7ECD;" class="headerlink" title="&#x4ECB;&#x7ECD;"></a>&#x4ECB;&#x7ECD;</h1><p><img src="/2015/10/18/MacGesture2-Publish/logo.jpg" alt="logo"></p>
+<p><a href="https://github.com/CodeFalling/MacGesture">MacGesture</a>&#x662F;&#x6211;&#x5728;&#x5927;&#x4E8C;&#x6691;&#x5047;&#x65F6;&#x6298;&#x817E;&#x7684;&#x4E00;&#x4E2A;&#x5C0F;&#x5DE5;&#x5177;&#xFF0C;OS X&#x8BA9;&#x6211;&#x6700;&#x4E0D;&#x9002;&#x7528;&#x7684;&#x5730;&#x65B9;&#x5C31;&#x662F;&#x6D4F;&#x89C8;&#x5668;&#x6CA1;&#x6709;&#x597D;&#x7528;&#x7684;&#x9F20;&#x6807;&#x624B;&#x52BF;&#xFF08;&#x6211;&#x7528;Chrome/Safari&#xFF09;&#xFF0C;&#x4E8E;&#x662F;&#x5C31;&#x81EA;&#x5DF1;fork&#x4E86;&#x4E00;&#x4E2A;keakon&#x7684;&#x9879;&#x76EE;&#x6539;&#x4E86;&#x6539;&#x3002;&#x4F46;&#x6700;&#x540E;&#x7684;&#x6210;&#x54C1;&#x5E76;&#x4E0D;&#x5982;&#x610F;&#xFF0C;&#x624B;&#x52BF;&#x5361;&#xFF0C;&#x8BBE;&#x7F6E;&#x56F0;&#x96BE;&#xFF08;&#x5F53;&#x65F6;&#x6B63;&#x88AB;Emacs&#x6D17;&#x8111;&#x7684;&#x6211;&#x51B3;&#x5B9A;&#x4F7F;&#x7528;lua&#x914D;&#x7F6E;&#x624B;&#x52BF;&#xFF09;&#xFF0C;&#x624B;&#x52BF;&#x9884;&#x89C8;&#x96BE;&#x770B;&#x3002;</p>
+<p>&#x4EE3;&#x7801;&#x6254;&#x5728;Github&#x4E0A;&#x4E5F;&#x83AB;&#x540D;&#x5176;&#x5999;&#x7684;&#x6DA8;&#x4E86;&#x5341;&#x51E0;&#x4E2A;star&#xFF0C;&#x53C8;&#x6709;&#x51E0;&#x4F4D;&#x5E76;&#x4E0D;&#x8BA4;&#x8BC6;&#x7684;&#x670B;&#x53CB;&#x8BF4;&#x8FD9;&#x4E2A;&#x5DE5;&#x5177;&#x5341;&#x5206;&#x6709;&#x7528;&#xFF0C;&#x8BA9;&#x6211;&#x611F;&#x5230;&#x5F88;&#x7F9E;&#x6127;&#x3002;&#x4E8E;&#x662F;&#x8D81;&#x7740;&#x6709;&#x7A7A;&#x628A;&#x539F;&#x6765;&#x7684;&#x4EE3;&#x7801;&#x91CD;&#x5199;&#x4E86;&#x4E00;&#x904D;&#xFF0C;&#x51FA;&#x4E86;&#x4E2A;2.0&#x7248;&#x672C;&#x3002;</p></div><a href="/2015/10/18/MacGesture2-Publish/" class="read-more">...more</a></article></li></ul></section><footer><div class="paginator"><a href="/" class="prev">PREV</a></div><div class="copyright"><p>© 2016 <a href="http://codefalling.com">codefalling</a>, unless otherwise noted.</p></div></footer></div><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"UA-72449503-1",'auto');ga('send','pageview');</script><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML"></script></body></html>
