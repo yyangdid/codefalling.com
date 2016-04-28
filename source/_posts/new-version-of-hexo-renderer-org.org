@@ -1,0 +1,87 @@
+#+TITLE: 完整特性的 hexo-renderer-org
+#+DATE: <2015-11-15 Sun 17:00>
+#+TAGS: project, emacs, hexo-renderer-org
+#+LAYOUT: post
+#+CATEGORIES: PROJECT
+
+* hexo-renderer-org
+
+[[https://github.com/CodeFalling/hexo-renderer-org][CodeFalling/hexo-renderer-org]] 是我之前给 hexo 开发的一个支持 orgmode 的渲染器插件，可以让 hexo 能够直接像支持 markdown 一样支持 orgmode。在我之前的文章中曾有介绍：[[http://codefalling.com/2015/10/25/use-orgmode-with-hexo/][在 Hexo 中使用 Orgmode | M-x codefalling]] 。
+
+** 存在的问题
+hexo-renderer-org 之前使用 [[https://github.com/mooz/org-js][mooz/org-js]] 作为渲染核心，但是 orgjs 本身的特性并不完整，而且作者的开发似乎趋于停止，导致很多特性不能很好的使用（例如脚注），或者会碰到一些奇怪的问题（见 issues：[[https://github.com/mooz/org-js/issues][Issues · mooz/org-js]]）。
+
+* 新版本
+
+新版的 hexo-renderer-org 直接使用当前机器上的 emacs 进行渲染，灵感来自于一行命令使用 emacs export org2html：[[http://stackoverflow.com/questions/22072773/batch-export-of-org-mode-files-from-the-command-line][emacs - Batch export of org-mode files from the command line - Stack Overflow]] 。实际的做法是传给 emacs 一段 emacs-lisp 干掉 yaml 的文件头（hexo 强制使用 yaml 文件头来读取一些元信息，例如标题，tag 等），然后 export 到 html 并且返回给 node。
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+** 优点
+
++ 拥有完整的 emacs org-mode 特性
++ 紧跟 org-mode 官方的更新（只要你安装最新版本的 emacs 即可）
+
+** 缺点
+
+比之前的版本慢上不少，不过还在可以接受的范围内
+
+不过在改为异步 renderer 后，整体的渲染速度快了一倍多，我目前十一篇文章在 clean 后 3.7s 就渲染完成，而之前需要 7.88s。（当然生成写入文件还需要时间）
+
+** 安装
+
+进入 hexo 博客的目录，如果有之前的版本先卸载掉之前的， =npm uninstall hexo-renderer-org --save=
+
+#+BEGIN_SRC shell
+  npm install https://github.com/CodeFalling/hexo-renderer-org#emacs --save
+#+END_SRC
+
+** 配置
+之前的 =toc= 选项不再存在，因为在完整的 orgmode 中你可以直接使用 =#+OPTION:= 配置你需要的一切。唯一需要配置的是
+
+#+BEGIN_EXAMPLE
+  org:
+    emacs: '/Applications/Emacs.app/Contents/MacOS/Emacs'
+#+END_EXAMPLE
+
+这里写的是 =emacs for osx= 默认的位置，如果不配置这一项它会从 =PATH= 中寻找 emacs。注意 *OS X 自带的 emacs 版本太低，无法做此用途*
+
+** 模板
+#+BEGIN_EXAMPLE
+  title: Title here
+  date: 2015-10-25 19:25:01
+  tags:
+  - emacs
+  - hexo
+  ---
+  ,* Orgmode
+  ,** Why orgmode
+  ,#+BEGIN_SRC js
+    consol.log("hello");
+  ,#+END_SRC
+
+  我编不下去了。。
+#+END_EXAMPLE
+** 限制
+
+
+=htmlize.el= 无法使用（不过 highlight.js 工作的很好，hexo 默认也使用 highlight.js）[fn::有兴趣的同学可以看看 http://stackoverflow.com/questions/3591337/emacs-htmlize-in-batch-mode]
+
+* some trick
+
+** 首页屏蔽 toc
+
+toc 在首页的文章预览里常常占用大量的位置（而且此时瞄点不能工作），所以可以在首页屏蔽掉，只要在对应的 theme 的 index 模板的对应位置加上。
+
+#+BEGIN_SRC html
+  <script>
+   document.addEventListener("DOMContentLoaded", function(event) {
+       $('div#table-of-contents').hide()
+  });
+  </script>
+#+END_SRC
+
+** emacs
+
+emacs 有关的命令在上篇文章已经有所介绍：[[http://codefalling.com/2015/10/25/use-orgmode-with-hexo/#sec-4][在 Hexo 中使用 Orgmode | M-x codefalling]]。

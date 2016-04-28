@@ -1,0 +1,81 @@
+#+TITLE: JSONP 实现
+#+DATE: 2016-04-22
+#+LAYOUT: post
+#+TAGS: javascript,jsonp
+#+CATEGORIES: javascript
+
+* JSONP
+
+~JSONP~ 是用来解决前端 ~ajax~ 的跨域问题，例如从 ~codefalling.com~ 的 ~js~ 向 ~s.weibo.com~ 获取数据时，如果使用普通 ~ajax~ ，会被浏览器因为安全因素拦截。而通过 ~<script>~ 标签加载其他域的 ~js~ 是没有跨域问题的，于是便有了 ~JSONP~ 这种 hack 手段。
+
+由于 ~JQuery~ 等库将其封装成和普通 ~ajax~ 形式一样的请求，所以常常有人误解，其实其原理和普通请求完全不同。本文通过简单的实现来解释一下这种 hack 的原理。
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+* JQuery
+
+首先看一个在 ~JQuery~ 中使用 ~JSONP~ 最简单的例子。
+
+#+BEGIN_SRC js
+  $.ajax({
+    url: "http://s.weibo.com/ajax/jsonp/suggestion?_cb=callback_fun&key=test",
+    dataType: 'jsonp',
+    jsonpCallback: 'callback_fun',
+    success: function(data){
+      console.log(JSON.stringify(data))
+    }
+  })
+#+END_SRC
+
+这里用的是新浪微博提供的一个 ~JSONP API~ 的范例，执行后可以看到控制台输出了[[fn::代码可以在[[http://codepen.io/pen/?editors=1111][ Create a New Pen]] 直接测试]]
+
+#+BEGIN_SRC js
+  {"code":100000,"msg":"","data":["特事特办","TEST"]}
+#+END_SRC
+
+看起来似乎和普通的 ~ajax~ 无异，但其实是 ~JQuery~ 的封装所致，我们可以手动访问 [[http://s.weibo.com/ajax/jsonp/suggestion?_cb=callback_func&key=test][s.weibo.com/ajax/jsonp/suggestion?_cb=callback_func&key=test]] ，得到
+
+#+BEGIN_SRC js
+  try {
+    window.callback_func & callback_func({
+      "code": 100000,
+      "msg": "",
+      "data": ["\u7279\u4e8b\u7279\u529e", "TEST"]
+    });
+  } catch (e) {}
+#+END_SRC
+
+看起来并不是一个 ~JSON~ 文件，反倒像 ~JS~ 。
+
+* 原理
+
+~JSONP~ 实际上是通过提前定义好 ~callback~ 函数（上面的代码里是 ~callback_func~ ），再通过追加一个 ~<script>~ 标签到文档上， ~src~ 指向 ~JSONP~ 请求的目标。由于 ~<script>~ 标签不受跨域的影响，我们讲 ~JSONP~ *作为一个 ~JavaScript~ 文件加载* ，然后  ~JSONP~ （或者说上面的 js 代码）得到执行。将其要传递的数组通过调用 ~callback~ 的方法传递给 ~JS~ 。
+
+* 实现
+
+看起来可能比较混乱，但是代码有时候比文字更为直观，我们可以尝试自己实现一个简单的 ~JSONP~ 封装。
+
+#+BEGIN_SRC js
+  function jsonp_ajax(url, callback_name, success){
+    // 提前准备好回调函数给 script 标签调用
+    var callback_func = function(data){
+      success(data)
+    }
+    window[callback_name] = callback_func
+
+    // 插入 script 标签
+    var script = document.createElement('script')
+    script.setAttribute('src', url)
+    document.body.appendChild(script)
+  }
+
+  jsonp_ajax('http://s.weibo.com/ajax/jsonp/suggestion?_cb=callback&key=test',
+             'callback',
+             function(data){
+               console.log(data)
+             })
+#+END_SRC
+
+可以达到和上面的一样的效果。

@@ -1,0 +1,160 @@
+#+TITLE: 在 Hexo 中使用 Orgmode
+#+DATE: <2015-10-25 Sun 19:25>
+#+TAGS: emacs, orgmode, hexo, hexo-renderer-org
+#+LAYOUT: post
+#+CATEGORIES: PROJECT
+
+
+* 背景
+我最近刚刚开始折腾个人博客，因为对 =Node.js= 很感兴趣，加上一些很好看的主题，所以选择了 =hexo= 。而本人又是一名 =emacs= 粉丝，于是折腾了一个使用 =emacs+orgmode+hexo= 的解决方案。可以在 hexo 中像使用 markdown 一样使用 orgmode。
+* Orgmode
+** 介绍
+   [[http://orgmode.org/][Orgmode]] 是 Emacs 下一个强大的插件，更加确切的说，它是一种强大的标记式语言（类似 Markdown)，正如官网的介绍
+
+   #+BEGIN_QUOTE
+
+
+   Org mode is for keeping notes, maintaining TODO lists, planning projects, and authoring documents with a fast and effective plain-text system.
+   #+END_QUOTE
+
+   Orgmode 可以用来做笔记，做 GTD，写作等等，而这一切都基于纯文本（这点和 Markdown 一致）。
+
+** 为什么使用 Orgmode
+   提到标记式语言，大家可能第一反应就是 Markdown，的确，Markdown 得益于社区的发展和本身的轻便，在程序员中几乎无人不知无人不晓，那么我们为什么选择 Orgmode 呢
+*** 和 Emacs 契合
+    Orgmode 是很多人选择 Emacs 的理由，它的理念和 Emacs 也很相近，强大而自由。在 Emacs 中你可以获得 Orgmode 最好的体验，定制自己的函数，控制如何截图并插入图片等，当然 Vim 和 Sublime Text 也有其相应的实现。
+*** 比 Markdown 更强大和统一
+    Orgmode 得益于设计的足够强大（标准的 Markdown 很多功能确实，现在流行的大多为各种方言），和较为中心化的开发，具有十分完备的功能和统一的实现。诸如链接到某个文件的某一行这样的功能用 Orgmode 也可以实现。
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+* Hexo
+[[https://hexo.io/zh-cn/][Hexo]] 是一个基于 Node.js 的静态博客生成器，以速度快著称，且有很多清新大方的主题使用。
+** hexo-renderer-org
+Hexo 默认只支持 Markdown，但是其灵活的插件系统允许我们自己编写 renderer 以支持不同的文件类型，于是我写了 [[https://github.com/Code[=hexo-renderer-org=]] 以支持 orgmode（感谢 [[https://github.com/geekplux][geekplux]] 的多次帮助，其实大部分代码由他重写过）。
+*** 使用
+=hexo-renderer-org= 使用起来很简单，只需要在博客所在的目录执行 
+
+=npm install --save hexo-renderer-org= 
+
+就可以直接在 =_post= 下面写 org 文件了。不过由于 hexo 的实现方式，一些元信息（标题，时间，tag 等）都在文件开头的 =yml= 读取，而不是通过 =#+TITLE:Balabal= 读取（谁让 Markdown 根本不支持 title tag 之类的呢）。
+
+文件的内容如下模板
+#+BEGIN_EXAMPLE
+  title: Title here
+  date: 2015-10-25 19:25:01
+  tags:
+  - emacs
+  - hexo
+  ---
+  * Orgmode
+  ** Why orgmode
+  #+BEGIN_SRC js
+    consol.log("hello");
+  #+END_SRC
+
+  我编不下去了。。
+#+END_EXAMPLE
+然后就可以像在 hexo 中使用 Markdown 一样使用 =hexo d -g= 来生成部署你的博客了。
+*** 配置
+=hexo-renderer-org= 目前支持的配置选项还不多（只有一个），在 hexo 的 =_config.yml= 中可以配置
+#+BEGIN_EXAMPLE
+  org:
+    toc: false
+#+END_EXAMPLE
+=toc= 代表是否开启 =table-of-content= ，由于大部分 hexo 主题其实自带了 toc 功能（前端实现，例如我现在用的 =hexo-theme-next= ），所以默认此功能是关闭的。
+*** Read more
+Hexo 使用直接插入 html =<!--more-->= 的方法来告诉首页在此处加入 =Read more=按钮。在 orgmode 中使用 =#+BEGIN_HTML= 和 =#+END_HTML= 来插入 html。所以只要写
+#+BEGIN_EXAMPLE
+  #+BEGIN_HTML
+  <!--more-->
+  #+END_HTML
+#+END_EXAMPLE
+即可在此位置放置一个 =Read more= 按钮。
+*** Github Pages
+Hexo 可以很方便的托管在 Github Pages 上，方便管理，同时又有免费无限的流量。具体的教程见 [[https://www.google.com/search?q=hexo+github+page][Google]]。
+
+当然你也可以选择将博客托管在自己的 VPS 或者任何其他支持静态 httpd 的地方。之前尝试过直接在 VPS 跑 =hexo server -p 80= 然后通过 TRAMP 直接远程修改文件（听起来很优雅对不对，本地只需要有一个可以远程编辑的 emacs 即可），但由于一些[[https://github.com/hexojs/hexo/issues/1175#issuecomment-151845634][比较奇葩的 bug]] 最终放弃。
+* Emacs
+
+提到 orgmode 必然就离不开 emacs，emacs 是一个强大的编辑器（操作系统），你可以自由定制大量的功能。例如添加一个函数直接完成 hexo 发布所需要的所有操作，快速截图直接插入到 org-mode，直接插入复制的图片地址。这些都不复杂，你可以轻松把 emacs 打造成你想要的样子。
+
+** 一键发布
+我是将博客托管在 [[https://github.com/CodeFalling/codefalling.github.io][Github]] 的，每次完成修改后都要将 =source= 分支 =commit= =push= ，然后再用 =hexo d -g= 来把生成的结果部署到 =master= 分支。非常不便，所以写了段简单的脚本，在 emacs 中可以直接调用。
+
+#+BEGIN_SRC elisp
+  (setq hexo-dir "~/blog")
+  (defun codefalling-hexo-publish (commit-msg)
+    "git add . & git commit & git push & hexo d -g"
+    (interactive "sInput commit message:")
+    (async-shell-command (format "cd %s ;git add . ;git commit -m \"%s\" ;git push ;hexo d -g"
+                           hexo-dir
+                           commit-msg)))
+#+END_SRC
+
+=M-x codefalling-hexo-publish= 然后输入 =commit message= ，后面的操作都将由脚本完成。
+
+ps：其实这段就是调用 shell 脚本，应该有更 elisp 的写法（只是我不太会-.-）
+
+之前用的 =shell-command= 改成 =async-shell-command= ，可以即时看到执行的反馈，会好很多。
+** 直接截图插入
+#+BEGIN_SRC elisp
+(defun codefalling-org-screenshot ()
+    "Take a screenshot into a time stamped unique-named file in the
+same ./{buffer name} for hexo,OS X only"
+    (interactive)
+    (setq filename
+          (concat
+           (make-temp-name
+            (concat
+            (file-name-sans-extension (buffer-name))
+                    "/"
+                    (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+    (call-process-shell-command "screencapture" nil nil nil "-s -t png" filename)
+    (insert (concat "[[file:" (file-name-nondirectory filename) "]]"))
+)
+#+END_SRC
+
+这段代码可以在 emacs 中调用 OS X 自带的截图程序，按照 hexo 的要求将其保存到和文章同名的文件夹下。（这个设定其实很不科学，因为发布后图片和发布前图片的相对路径并不一致，所以在 emacs orgmode 里显示不出来。同理 markdown 编辑器里也会显示不出来，这也是我为什么更倾向于图床的原因）。
+
+要使用的同学也可以自己加以修改，例如获取用户输入给图片加上标题什么的。
+
+** 显示网络图片
+上面说到我更倾向于图床，但是在 emacs 里是不显示在线的图片的，[[https://github.com/lujun9972][Darkson]] 写了一个支持显示网络图片的 [[https://github.com/lujun9972/uimage][uimage]] 。可以通过 melpa 安装，然后在需要的时候 =M-x turn-on-uimage-mode= 即可。
+
+#+ATTR_HTML:  :alt caption
+file:use-orgmode-with-hexo/preview.jpg
+
++同时对于使用 Chrome 的同学，推荐 [[https://chrome.google.com/webstore/detail/fdfdnfpdplfbbnemmmoklbfjbhecpnhf][微博图床]] 这个插件，非常好用。+
+
+对于微博图床还是不太放心，于是改用了七牛云来做图床，流量不大时免费完全够用。同样有个 [[https://chrome.google.com/webstore/detail/qiniu-upload-files/emmfkgdgapbjphdolealbojmcmnphdcc][Chrome 插件]] 推荐。不如上面的好用，但是相对还是要放心不少。
+
+** 在 Emacs 里直接新建文章并且打开
+
+#+BEGIN_SRC emacs-lisp
+  (defun codefalling/hexo-org-new-open-post (post-name)
+    "create a hexo org post"
+    (interactive "sInput post name:")
+    (find-file (format "%s/source/_posts/%s.org" hexo-dir post-name))
+    (insert (format "title: '%s'
+  date: %s
+  tags:
+  ---"  post-name (format-time-string "%Y-%m-%d %H:%M:%S"))))
+#+END_SRC
+
+** 使用 ido 直接打开 source 文件夹
+#+BEGIN_SRC emacs-lisp
+  (defun codefalling/hexo-org-source ()
+    "use dired open hexo source dir"
+    (interactive)
+    (ido-find-file-in-dir (format "%s/source/" hexo-dir))
+    )
+#+END_SRC
+
+* 更多功能
+Emacs Lisp 还能做很多有趣的事情，可以参考 [[http://emacswiki.org/emacs/OrgMode][Emacs Wiki]]，或者按照自己的需求在 Google 上寻找。
+
+* 更新
+
+新版本的 hexo-renderer-org 已经做出了不少改动，配置需要做出一些改变，具体参见[[http://codefalling.com/2015/11/10/new-version-of-hexo-renderer-org/][完整特性的 hexo-renderer-org | M-x codefalling]]

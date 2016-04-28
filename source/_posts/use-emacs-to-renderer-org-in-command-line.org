@@ -1,0 +1,88 @@
+#+TITLE: 外部调用 Emacs 渲染 orgmode
+#+DATE: <2015-11-13 Fri 20:21>
+#+TAGS: emacs, orgmode
+#+LAYOUT: post
+#+CATEGORIES: EMACS
+
+
+* Table of Contents                                                     :TOC_4_org:noexport:
+ - [[引子][引子]]
+ - [[Run Emacs Lisp in Commmand-line][Run Emacs Lisp in Commmand-line]]
+   - [[Hello World][Hello World]]
+   - [[org2html][org2html]]
+   - [[Trouble Shooting][Trouble Shooting]]
+     - [[htmlize 不能正常工作][htmlize 不能正常工作]]
+     - [[org-html-fontify-code: Wrong number of arguments][org-html-fontify-code: Wrong number of arguments]]
+ - [[延伸阅读][延伸阅读]]
+
+* 引子
+
+因为前一段时间尝试给 hexo 写一个 orgmode 的 renderer，所以到处找各种将 orgmode 转化为 html 的方式。orgmode 不如 markdown 流行且功能复杂（在 orgmode 开发组的工作下还在演进）。此前我曾尝试 [[https://github.com/mooz/org-js][mooz/org-js]] ，作者做的确实很漂亮，但是似乎开发陷入停滞，而且还有太多的特性需要支持，于是便想到调用 emacs 本身进行渲染。
+
+* Run Emacs Lisp in Commmand-line
+
+** Hello World
+#+BEGIN_SRC sh :results output code :exports both
+  emacs --batch --execute '(message "hello,world!")' --kill
+#+END_SRC
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+要注意 =emacs --batch= 将 =message= 的输出全部输出到了 =stderr= ，我也不知道原因。
+
+=--batch--= 在 =emacs -help= 里有描述
+
+#+BEGIN_QUOTE
+ --batch:                    do not do interactive display; implies -q
+#+END_QUOTE
+
+可以理解为只加载了 =emacs lisp= 的解释器，而不加载图形界面（为后面一个坑埋下伏笔）。这样的情况下 emacs 加载的速度还是相当让人满意的，上面的命令在我这里执行之花了 0.090s。
+
+** org2html
+
+可以尝试新建一个简单的 =test.org= 然后执行
+#+BEGIN_SRC shell
+  emacs --batch --execute '(progn (find-file "test.org")(org-html-export-as-html)(message "%s" (buffer-string)))' --kill
+#+END_SRC
+
+就可以看到结果从终端上输出了~
+
+** Trouble Shooting
+
+*** htmlize 不能正常工作
+上面提到 batch 是不加载 UI 的，所以依赖 UI 配色的 =htmlize= 不能正常使用。不过通过手动增加 =load-path= 并且使用指定的 =font-lock= 也可以工作。
+
+#+BEGIN_SRC emacs-lisp
+  ;; Make sure the the htmlize library is in load-path.
+  (custom-set-faces
+   '(default                      ((t (:foreground "#ffffff" :background "black"))))
+   '(font-lock-builtin-face       ((t (:foreground "#ff0000"))))
+   '(font-lock-comment-face       ((t (:bold t :foreground "#333300"))))
+   '(font-lock-constant-face      ((t (:foreground "magenta"))))
+   '(font-lock-function-name-face ((t (:bold t :foreground "Blue"))))
+   '(font-lock-keyword-face       ((t (:foreground "yellow3"))))
+   '(font-lock-string-face        ((t (:foreground "light blue"))))
+   '(font-lock-type-face    ((t (:foreground "green"))))
+   '(font-lock-variable-name-face ((t (:foreground "cyan" :bold t))))
+   '(font-lock-warning-face       ((t (:foreground "red" :weight bold)))))
+
+  (setq htmlize-use-rgb-map 'force)
+  (require 'htmlize)
+#+END_SRC
+
+*** org-html-fontify-code: Wrong number of arguments
+
+#+BEGIN_SRC emacs-lisp
+  (defun org-font-lock-ensure ()
+    (font-lock-fontify-buffer))
+#+END_SRC
+
+这是来自 [[http://wenshanren.org/?p=768][Emacs: org-html-export 时出现 org-html-fontify-code: Wrong number of arguments… | 肉山博客 (Wenshan's Blog)]] 的解决方案。
+
+* 延伸阅读
+
++ [[http://wenshanren.org/?p=768][Emacs: org-html-export 时出现 org-html-fontify-code: Wrong number of arguments… | 肉山博客 (Wenshan's Blog)]]
++ [[http://comments.gmane.org/gmane.emacs.orgmode/60331][htmlize doesn't work in --batch mode]]
++ [[http://stackoverflow.com/questions/3591337/emacs-htmlize-in-batch-mode][Emacs htmlize in batch mode? - Stack Overflow]]

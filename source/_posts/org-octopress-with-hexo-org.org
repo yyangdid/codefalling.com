@@ -1,0 +1,137 @@
+#+TITLE: 在 hexo-org 中使用 org-octopress
+#+DATE: <2015-11-17 Tue 21:18>
+#+LAYOUT: post
+#+TAGS: hexo, hexo-renderer-org, orgmode, emacs, org-octopress
+#+CATEGORIES: EMACS
+* 引子
+前段时间折腾了个 [[https://github.com/CodeFalling/hexo-renderer-org][CodeFalling/hexo-renderer-org]] 来让 hexo 支持 orgmode，然后就开始在 emacs 下写博客。当时为了操作方便等用 emacs-lisp 写了几个简单的函数，例如用 ~ido~ 直接打开 ~source/_post~ ，新建文章等。但后来看了 [[http://zilongshanren.com/][子龙山人]] 录的 [[https://github.com/zilongshanren/Spacemacs-rocks/issues/11][Spacemacs Org-mode as a blogging engine]] 。才发现还有一个 [[https://github.com/yoshinari-nomura/org-octopress][yoshinari-nomura/org-octopress]] 。
+
+* org-octopress
+
+~org-octopress~ 本是让 ~octopress~ 支持 orgmode 的 emacs 插件，它把 orgmode 渲染为 HTML 然后交给 ~octopress~ ，同时提供了一个很直观的 UI（如上图），可以直接在文章列表里打开对应的文章，删除文章，新增文章等。
+
+本文将如何在 ~hexo+hexo-renderer-org~ 的情况下借用其 UI，效果如下：
+
+#+ATTR_HTML:  :alt 效果预览
+file:org-octopress-with-hexo-org/preview.jpg
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+* hexo-renderer-org
+
+让 hexo 像支持 md 一样支持 org，把 org 文章扔到 ~source/_post/~ 即可。
+
+具体的介绍文章见：[[http://codefalling.com/tags/hexo-renderer-org/][标签: hexo-renderer-org | M-x codefalling]]
+
+Github：[[https://github.com/CodeFalling/hexo-renderer-org][CodeFalling/hexo-renderer-org]]
+
+* hack
+
+首先安装 ~org-octopress~ 这个 package。然后在 ~(require 'org-octopress)~ 后重写它的一些函数。
+
+我使用的是 ~spacemacs~ ，如果你不使用可能需要做出一些改动。
+#+BEGIN_SRC emacs-lisp
+  (defun codefalling/init-org-octopress ()
+    (use-package org-octopress
+      :config
+      (progn
+        (setq org-octopress-directory-top       "~/blog/source")
+        (setq org-octopress-directory-posts     "~/blog/source/_posts")
+        (setq org-octopress-directory-org-top   "~/blog/source")
+        (setq org-octopress-directory-org-posts "~/blog/source/_posts")
+        )
+
+      ;; rewrite in org-octopress.el
+      (defun org-octopress--summary-table (contents keymap) ;; 去掉 publish 这一列，因为 hexo 不需要
+        (let ((param (copy-ctbl:param ctbl:default-rendering-param)))
+          (ctbl:create-table-component-region
+           :param param
+           :width  nil
+           :height nil
+           :keymap keymap
+           :model
+           (make-ctbl:model
+            :data contents
+            :sort-state '(-1 2)
+            :column-model
+            (list (make-ctbl:cmodel
+                   :title "Date"
+                   :sorter 'ctbl:sort-string-lessp
+                   :min-width 10
+                   :align 'left)
+                  (make-ctbl:cmodel
+                   :title "Category"
+                   :align 'left
+                   :sorter 'ctbl:sort-string-lessp)
+                  (make-ctbl:cmodel
+                   :title "Title"
+                   :align 'left
+                   :min-width 40
+                   :max-width 140)
+                  )))))
+
+      (defun org-octopress (&optional title)
+        "Org-mode and Octopress."
+        (interactive)
+        (setq org-octopress-summary-buffer (get-buffer-create "Octopress"))
+        (switch-to-buffer org-octopress-summary-buffer)
+        (setq buffer-read-only nil)
+        (erase-buffer)
+        (insert (org-octopress--summary-header title))
+        (save-excursion
+          (setq org-octopress-component (org-octopress--summary-table
+                                         (org-octopress--scan-post) org-octopress-summary-mode-map)))
+        (ctbl:cp-add-click-hook
+         org-octopress-component
+         (lambda ()
+           (find-file (nth 3 (ctbl:cp-get-selected-data-row org-octopress-component))))) ;; 这里的 4 改为 3，因为我修改了列数
+        (org-octopress-summary-mode)
+        (ctbl:navi-goto-cell
+         (ctbl:find-first-cell (ctbl:component-dest org-octopress-component)))
+        )
+
+      (define-key org-octopress-summary-mode-map "w" 'codefalling/hexo-org-new-open-post) ;; 讲 "w" 绑定到 ~codefalling/hexo-org-new-open-post~，这个函数是我自定义的
+
+      (defun org-octopress--scan-post ()
+        (mapcar
+         (lambda (filename)
+           (org-jekyll-property
+            '(:date
+              :jekyll-categories
+              :title
+              :input-file)
+            filename))
+         (directory-files
+          (expand-file-name
+           org-octopress-directory-org-posts) t "^.*\\.org$"))) ;; jekyll 要求所有文章以日期开头，而 hexo 不需要
+
+      ;; rewrite in ox-jekyll.el
+      (defcustom org-jekyll-date ""
+        "Default date used in Jekyll article."
+        :group 'org-export-jekyll
+        :type 'string)
+      (org-export-define-derived-backend'jekyll 'html
+                                                :export-block '("HTML" "JEKYLL")
+                                                :menu-entry
+                                                '(?j "Jekyll: export to HTML with YAML front matter."
+                                                     ((?H "As HTML buffer" org-jekyll-export-as-html)
+                                                      (?h "As HTML file" org-jekyll-export-to-html)))
+                                                :translate-alist
+                                                '((template . org-jekyll-template) ;; add YAML front matter.
+                                                  (src-block . org-jekyll-src-block)
+                                                  (inner-template . org-jekyll-inner-template)) ;; force body-only
+                                                :options-alist
+                                                '((:jekyll-layout "LAYOUT" nil org-jekyll-layout) ;; hexo-renderer-org 没有使用 JEKYLL 这个 prefix
+                                                  (:jekyll-categories "CATEGORIES" nil org-jekyll-categories)
+                                                  (:jekyll-tags "TAGS" nil org-jekyll-tags)
+                                                  (:date "DATE" nil org-jekyll-date)
+                                                  (:jekyll-published "PUBLISHED" nil org-jekyll-published)
+                                                  (:jekyll-comments "COMMENTS" nil org-jekyll-comments)))
+      ))
+
+#+END_SRC
+
+具体的改动可以对比 [[https://github.com/yoshinari-nomura/org-octopress/blob/master/ox-jekyll.el][org-octopress/ox-jekyll.el at master · yoshinari-nomura/org-octopress]] 和 [[https://github.com/yoshinari-nomura/org-octopress/blob/master/org-octopress.el][org-octopress/org-octopress.el at master · yoshinari-nomura/org-octopress]] 。
+
+emacs-lisp easy-to-hack 的特性在这里得到充分的体现，我们很容易在不修改原有代码的情况下改变其行为。这里我只是改变了列表显示和新建文章的行为，你可以在阅读原来的代码后更加随心所欲的修改。

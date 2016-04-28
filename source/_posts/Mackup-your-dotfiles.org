@@ -1,0 +1,47 @@
+#+TITLE: 优雅的同步 dotfiles:mackup
+#+DATE: <2015-11-01 Sun 21:14>
+#+TAGS: tool
+#+LAYOUT: post
+#+CATEGORIES: TOOL
+
+* 引言
+
+很多时候我们需要迁移自己的开发环境，或是为了在多个设备间同步自己的设备，或是在某次重装后需要重新配置。于是我们开始把配置文件一个个的 =ln= 到同步盘，然后觉得这样太麻烦，把这样的操作再写成脚本，每增加一个配置，就要找一次位置，改一次脚本。如此麻烦的操作完全就是重复劳动，具有偷懒美德的我们自然无法忍受，于是就有了：[[https://github.com/lra/mackup][ lra/mackup]]
+
+* mackup
+
+** 介绍
+正如上面介绍的，mackup 是用来消除这种重复工作的，它做的其实也很简单，根据需要同步的 app（支持列表在其 Github 可以看到），自动找到相应的配置文件 =ln= 到你配置的位置。
+
+你唯一需要做的，就是在 =~/.mackup.cfg= 里配置好要同步的配置和同步的位置。（然后备份好这个文件本身，恩）。
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+** 安装和使用
+
+用法在其 [[https://github.com/lra/mackup][Github]] 上都已经有了介绍，不太明白为什么要把 =~/.mackup.cfg= 的介绍藏的 [[https://github.com/lra/mackup/blob/master/doc/README.md][mackup/README.md at master · lra/mackup]] 里，总之点进去看就可以了。
+
+** 支持的 app
+支持的列表在其 Github 首页就可以看到，我主要用来同步 =spacemacs fish ssh git=等。
+
+** 如何添加不支持的 app
+在 Github 上 [[https://github.com/lra/mackup/tree/master/mackup/applications][mackup/mackup/applications at master · lra/mackup]] 按照对应的格式添加即可。可以给作者提交 PR，虽然不知道什么时候会响应。
+
+如果自己急着用，对应的地址应该是 =/usr/local/Cellar/mackup/0.8.11/libexec/lib/python2.7/site-packages/mackup/applications/= ，其中 =0.8.11= 可能会变动。
+* 坑
+
++=spacemacs= 默认的配置漏了 =.spacemacs.d= ，需要手动修改 =/usr/local/Cellar/mackup/0.8.11/libexec/lib/python2.7/site-packages/mackup/applications/spacemacs.cfg= ,改成+
+
+#+BEGIN_EXAMPLE
+  [application]
+  name = Spacemacs
+
+  [configuration_files]
+  .spacemacs
+  .spacemacs.d
+#+END_EXAMPLE
+
++我已经给作者递交了一个 PR，说不定下个版本就已经修复了。+
+
+PR 已经被接受，这个问题已经修复了。

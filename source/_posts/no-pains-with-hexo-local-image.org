@@ -1,0 +1,69 @@
+#+TITLE: 在 hexo 中无痛使用本地图片
+#+DATE: <2015-12-19 Sat 20:51>
+#+LAYOUT: post
+#+TAGS: hexo,project,hexo-asset-image
+#+CATEGORIES: PROJECT
+
+* 起因
+
+在 hexo 中使用本地图片是件非常让人纠结的事情，在 markdown 里的图片地址似乎永远无法和最后生成的网页保持一致。
+
+这些问题使得我一度不愿意使用本地图片而选择用图床，但被移动运营商无耻的横条广告逼得打算上 https，图床只支持 http 就成了问题。
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+
+hexo 下插入图片现在大概有几个方案
+
+** 放在根目录
+早期大部分的方案是把图片放在 ~source/img~ 下，然后在 markdown 里写 ~![img](/source/img/img.png)~ 。显然这样在本地的编辑器里完全不能正确识别图片的位置。
+
+** asset-image
+在 hexo 2.x 时出现的插件，后来被吸纳进 ~hexo 3 core~ ，用法的介绍见 [[https://hexo.io/zh-cn/docs/asset-folders.html][资源文件夹 | Hexo]] 。比较尴尬的是，这种方法直接放弃了 markdown 原来的语法，使用类似 ~{% asset_img example.jpg This is an example image %}~ 的语法，。markdown 本来有插入图片的语法不好好支持，专门用一个新的语法来插入本地图片，让我这种强迫症不太能接受。
+
+* 解决方案
+
+[[https://github.com/CodeFalling/hexo-asset-image][CodeFalling/hexo-asset-image]]
+
+** 使用
+首先确认 ~_config.yml~ 中有 ~post_asset_folder:true~ 。
+
+在 hexo 目录，执行
+
+#+BEGIN_SRC shell
+  npm install https://github.com/CodeFalling/hexo-asset-image --save
+#+END_SRC
+
+假设在
+
+#+BEGIN_EXAMPLE
+MacGesture2-Publish
+├── apppicker.jpg
+├── logo.jpg
+└── rules.jpg
+MacGesture2-Publish.md
+#+END_EXAMPLE
+
+这样的目录结构（目录名和文章名一致），只要使用 ~![logo](MacGesture2-Publish/logo.jpg)~ 就可以插入图片。
+生成的结构为
+
+#+BEGIN_EXAMPLE
+public/2015/10/18/MacGesture2-Publish
+├── apppicker.jpg
+├── index.html
+├── logo.jpg
+└── rules.jpg
+#+END_EXAMPLE
+
+同时，生成的 html 是
+#+BEGIN_SRC html
+  <img src="/2015/10/18/MacGesture2-Publish/logo.jpg" alt="logo">
+#+END_SRC
+
+而不是愚蠢的
+#+BEGIN_SRC html
+  <img src="MacGesture2-Publish/logo.jpg" alt="logo">
+#+END_SRC
+
+值得一提的是，这个插件对于 [[https://github.com/CodeFalling/hexo-renderer-org][CodeFalling/hexo-renderer-org]] 同样有效。

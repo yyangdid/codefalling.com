@@ -1,0 +1,61 @@
+#+TITLE: 完美解决 Mac 下 Vim/Emacs 的输入法切换问题
+#+DATE: <2015-11-02 Mon 16:29>
+#+TAGS: tool,project
+#+LAYOUT: post
+#+CATEGORIES: PROJECT
+
+* 背景
+=vi-mode= 是一种高效的编辑方式，但是最令人头疼的莫过于在普通模式下输入命令的时候却被输入法挡住，对于我这种经常忘记切输入法的人来说非常痛苦。
+
+#+ATTR_HTML:  :alt 命令被输入法堵住
+file:fcitx-vim-for-OS-X/preview.png
+
+为了解决这种问题，很早以前就有了 [[https://github.com/vim-scripts/fcitx.vim][vim-scripts/fcitx.vim]] （for Vim）和 [[https://github.com/cute-jumper/fcitx.el][cute-jumper/fcitx.el]] (for Emacs)。利用插件和 =fcitx= 进行沟通，让输入法随着用户的需要自动改变。
+
+但是 fcitx 是 Linux only 的，OS X 下无法使用。
+
+* fcitx-remote
+=fcitx-remote= 是 fcitx 提供的一个命令行小工具，用于在命令行下控制输入以及获取输入法状态。早期版本的 =fcitx.vim= 和 =fcitx.el= 通过这个程序来和 =fcitx= 进行交互。于是我收到启发，如果在 OS X 下实现一个 =fcitx-remote= ，和 =fcitx= 保持一致的使用方法， =fcitx.vim= 和 =fcitx.el= 就可以在 OS X 直接使用了。所以有了这个项目：[[https://github.com/CodeFalling/fcitx-remote-for-osx][CodeFalling/fcitx-remote-for-osx]]
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+* 安装
+** homebrew
+#+BEGIN_SRC shell
+brew install fcitx-remote-for-osx --with-input-method=baidu-pinyin
+#+END_SRC
+
+=--with-input-method=baidu-pinyin= 表示你使用的是百度拼音输入法
+
+你可以使用 =brew info fcitx-remote-for-osx= 来查看支持的更多选项。
+
+#+BEGIN_EXAMPLE
+--with-input-method=
+  Select input method: baidu-pinyin(default), baidu-wubi, sogou-pinyin, qq-wubi, squirrel-rime, osx-pinyin
+#+END_EXAMPLE
+
+** 手工安装
+#+BEGIN_SRC shell
+  git clone https://github.com/CodeFalling/fcitx-remote-for-osx
+  cd fcitx-remote-for-osx
+  xcodebuild GCC_PREPROCESSOR_DEFINITIONS='$GCC_PREPROCESSOR_DEFINITIONS CHINNESE_KEYBOARD_LAYOUT=@\"com.baidu.inputmethod.BaiduIM.pinyin\"' install
+#+END_SRC
+
+编译完成后可执行文件会被安装到 =/usr/local/bin/fcitx-remote=
+
+构建指令看起来比较长，是因为要定制所用的中文输入法，对应输入法的 =imname= 可以在 [[https://github.com/CodeFalling/fcitx-remote-for-osx#install][Github]] 看到，如果表里没有你用的输入法，你可以先安装了 =fcitx-remote= ，然后用 =fcitx-remote -n= 来获取当前的输入法名，欢迎以任何形式向我补充。
+
+我使用的是百度拼音，如果你使用其他输入法，编译参数要做响应的修改。
+** 二进制文件
+如果你不愿意安装 XCode，也可以去 [[https://github.com/CodeFalling/fcitx-remote-for-osx/releases/tag/0.0.1][Release Prebuild binary here · CodeFalling/fcitx-remote-for-osx]] 下载编译好的二进制文件，然后将其复制到 =/usr/local/bin/=
+* Emacs
+由于我自己是 emacs 用户所以先提 emacs， =fcitx-remote= 可以和 [[https://github.com/cute-jumper/fcitx.el][cute-jumper/fcitx.el]] 配合使用， +但是不要使用 =(fcitx-prefix-keys-turn-on)= 和 =(fcitx-prefix-keys-setup)= （即不要直接使用 =fcitx-default-setup= 什么的），会导致 emacs 假死，原因不详。我自己使用的配置是+
+
+之前使用的时候会卡死，后来发现是因为我用的 =fish-shell= ，在 emacs 的配置里加上一句 =(setq shell-file-name "bash")= ，问题就完美解决了。
+
+* Vim
+本来以为 vim 是使用不了这个小工具的，但是后来发现老版本的 =fcitx.vim= 同样使用 =fcitx-remote= ，然后简单的修改下（不然会很卡），放在了 [[https://github.com/CodeFalling/fcitx-vim-osx][CodeFalling/fcitx-vim-osx]] 。可以直接通过 =vundle= 安装，这个版本也可以直接在 Linux 下使用。
+
+* 反馈
+使用中碰到任何问题，欢迎去 [[https://github.com/CodeFalling/fcitx-remote-for-osx][CodeFalling/fcitx-remote-for-osx]] 开 issue 或者直接评论。

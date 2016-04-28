@@ -1,0 +1,37 @@
+#+TITLE: About Me
+#+DATE: <2015-11-24 Tue 15:48>
+#+LAYOUT: post
+#+MACRO: github-card #+html:<div class="github-card" data-github="$1" data-width="400" data-theme="default" target="blank"></div> <script src="//cdn.jsdelivr.net/github-cards/latest/widget.js"></script>
+
+
+* 关于我
+
+** 我是谁
+一名热爱编程和折腾的大三学生。
+
+** 联系我
+
+Email: me@codefalling.com
+
+Github: [[https://github.com/codefalling][CodeFalling (She Jinxin)]]
+
+或者直接在下面留言
+* 项目
+** RecyclerViewSwipeDismiss
+{{{github-card(CodeFalling/RecyclerViewSwipeDismiss)}}}
+Android RecyclerView 的一个非常简单，非侵入性的滑动删除库
+** MacGesture
+{{{github-card(CodeFalling/MacGesture)}}}
+Mac OS X 的鼠标手势软件，类似 FireGesture，[[http://codefalling.com/MacGesture/][MacGesture | M-x codefalling]]
+** fcitx-remote-for-osx
+{{{github-card(CodeFalling/fcitx-remote-for-osx)}}}
+一个 Mac 下的命令行工具，让 fcitx.vim 和 fcitx.el 可以在 Mac 下使用，完美解决输入法阻挡命令的问题。
+
+** hexo-renderer-org
+{{{github-card(CodeFalling/hexo-renderer-org)}}}
+Hexo 插件，让 hexo 支持 orgmode。
+
+
+* 关于这个博客
+
+这个博客使用 hexo + [[https://github.com/CodeFalling/hexo-renderer-org][CodeFalling/hexo-renderer-org]] 生成，托管在 Gitcafe[fn::源代码在 Github 也可见：[[https://github.com/CodeFalling/codefalling.github.io][CodeFalling/codefalling.github.io]] ]，使用 Emacs 编辑。

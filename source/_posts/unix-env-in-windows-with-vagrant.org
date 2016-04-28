@@ -1,0 +1,39 @@
+#+TITLE: 利用 Vagrant 搭建 Windows 下的 Unix 环境
+#+DATE: <2016-01-24 Sun 15:10>
+#+LAYOUT: post
+#+TAGS: tools
+#+CATEGORIES: TOOL
+
+* 背景
+Windows 是一个坚实可靠的操作系统，又有非常完善的软件生态，但其 *nix 兼容性一直为人诟病，虽然 ~cygwin~ ~msys~ ~msys2~ ~babun~ 等工具层出不穷，试图为 Windows 提供一个可用的 Unix 环境，但都只是勉强能用，和 wineqq 一个尿性，是无奈之选。
+
+本来使用虚拟机 + ssh 的方案直接使用命令行，结果无意间发现 X11-forward 的效果非常棒，可以直接在 Windows 下操作虚拟机里的窗口。
+* 效果
+这是运行在虚拟机里，但窗口却在 Windows 下的 emacs。
+[[file:unix-env-in-windows-with-vagrant/emacs-x11-forward.png]]
+
+#+BEGIN_HTML
+<!--more-->
+#+END_HTML
+* 工具
+** VirtualBox
+VirtualBox 是一个知名的开源虚拟机，以前也曾尝试过直接使用 VirtualBox 在 Windows 下安装 Linux 虚拟机然后从 ssh 登录，但每次都要手动去配置文件共享，网络等问题非常烦人。
+
+** Vagrant
+Vagrant 是个非常棒的解决方案，依托于 VirtualBox 可以提供非常方便的虚拟机解决方案。尤其是文件共享和网络配置都可以在一个配置文件里直接写好， ~vagrant up~ 就可以在后台启动虚拟机，然后使用自己的 ssh 客户端就可以 ssh 到虚拟机。
+
+注：你需要一个速度够快的梯子，否则安装 box 的过程会很痛苦。
+
+** MobaXterm
+这是我在 Windows 下能找到的最好用的 ssh client 了，虽然还有诸多让我不满意的地方（例如说不能定制 fallback font），但综合来说非常好用。自带通过 scp 的文件管理和足够好用的 X11 Server（这点很重要）。
+
+** fcitx
+最惊讶的是 fcitx 在 X11 forward 中居然也能正常工作，可以通过 ~fcitx-configtools~ 来进行配置，记得修改环境变量和启动 ~fcitx -d &~ （因为虚拟机里没装桌面环境并不会自动启动）。同时 ~fcitx.el~ 也工作的非常完美。
+
+* 优点
+
+这样做相对其他的方案的优点，主要在
+
++ 完整的 Linux 环境，而不是各种残缺不全的模拟，这意味着很多
++ 原来 Linux GUI 下的东西居然也能通过 X11 forward 完美工作，这点让我很惊喜，例如 ~fcitx-remote~ 在 Windows 下目前还没有等价的替代品，而如此一来完全可以无障碍的使用
++ 同样完整的 Windows 环境，Windows 就不用多说了，丰富的桌面软件，和硬件的契合度，以及各种游戏
