@@ -8,11 +8,17 @@ categories: javascript
 
 阅读源码是一种非常重要的学习方式，我们可以直接从高手的源码中收获其他地方难以获得的最佳实践和编码思想。因为 `underscore` 的代码结构较为简单，而且注释非常详细，所以先从 `underscore` 开始。
 
-本文阅读的源码版本是`1.8.3`，可以直接在 [Github](https://github.com/jashkenas/underscore/blob/e4743ab712b8ab42ad4ccb48b155034d02394e4d/underscore.js) 上看到代码。
+本文阅读的源码版本是`1.8.3`，可以直接在 [Github](https://github.com/jashkenas/underscore/blob/e4743ab712b8ab42ad4ccb48b155034d02394e4d/underscore.js) 上看到代码。可以尝试从 `Github` 上 clone 代码，`npm install`，按照自己的想法进行一些改动，然后通过 `npm run test` 检验修改后的代码是否仍能通过测试。
 
 有些地方可能不按照代码原有顺序，因为部分代码依赖后面的内容，单独阅读很难理解。
 
 <!-- more -->
+
+## 工具
+
+一个非常实用的 blame 辅助插件：[Github Blame Tool - Chrome Web Store](https://chrome.google.com/webstore/detail/github-blame-tool/kipdndanedkendebejagldikdfogakig)
+
+因为 Github 本身的 blame 只能看到上一次的无法向上追溯，这个插件显得极为有用。
 
 ## 代码阅读
 
@@ -289,18 +295,8 @@ _.reduceRight = _.foldr = createReduce(-1);
 我们来看看文档中 `reduce` 的用法：
 
 ``` javascript
-function reduce(list, iteratee, memo, context) {
-  var result = memo
-  for(var i = 0; i < list.length; i++) {
-    result = iteratee.call(context, list[i], result)
-  }
-  return result
-}
-
-reduce([1, 2, 3], function(memo, b){return memo + b}, 0, null)
-
 var sum = _.reduce([1, 2, 3], function(memo, num){ return memo + num; }, 0);
-=> 6
+// => 6
 ```
 
 和我们平时常用的 `Array.prototype.reduce` 很类似。我们可以自己尝试着实现一个简单的 `reduce`。
@@ -395,5 +391,296 @@ _.negate = function(predicate) {
 ```
 
 这里用到了一个 `_.negate` 函数，是将一个判断函数变成与其相反的判断函数。
+
+## _.every/_.some
+
+``` javascript
+// Determine whether all of the elements match a truth test.
+// Aliased as `all`.
+_.every = _.all = function(obj, predicate, context) {
+    predicate = cb(predicate, context);
+    var keys = !isArrayLike(obj) && _.keys(obj),
+        length = (keys || obj).length;
+    for (var index = 0; index < length; index++) {
+        var currentKey = keuys ? keys[index] : index;
+        if (!predicate(obj[currentKey], currentKey, obj)) return false;
+    }
+    return true;
+}; 
+```
+
+上面是 `_.every` 的代码，非常简单，遍历每一个元素，一旦有元素不满足条件就返回 `false`，全部遍历完返回 `true`， `_.some` 也是类似的道理。
+
+其实可以使用 `_.each` 改写代码，我使用下面的代码替代源代码的实现，仍然能够通过测试。
+
+``` javascript
+_.every = _.all = function(obj, predicate, context) {
+  predicate = cb(predicate, context);
+  var result = true;
+  _.each(obj, function(item, index){
+    if (!predicate(item, index, obj)) result = false;
+  });
+  return result;
+};
+```
+
+这里之所以没有采取这种实现，是处于性能考虑，因为一旦有一项确认不满足条件，即可直接返回 `false`，而 `_.each` 无法做到这一点。
+
+## invoke
+
+> Calls the method named by **methodName** on each value in the list. Any extra arguments passed to invoke will be forwarded on to the method invocation.
+
+``` javascript
+_.invoke([[5, 1, 7], [3, 2, 1]], 'sort');
+=> [[1, 5, 7], [1, 2, 3]]
+```
+
+乍一看好像和 `_.map` 没啥区别，但文档中特地强调是 `methodName`，也就是说会调用每个元素对应的**方法**。例如说：
+
+``` javascript
+_.invoke([[5, 1, 7], [3, 2, 1]], 'toString');
+=> ["5,1,7", "3,2,1"]
+```
+
+源代码：
+
+``` javascript
+// Invoke a method (with arguments) on every item in a collection.
+_.invoke = function(obj, method) {
+  var args = slice.call(arguments, 2); // 获得要传递的 `arguments`（前两个忽略）
+  var isFunc = _.isFunction(method);
+  return _.map(obj, function(value) {
+    var func = isFunc ? method : value[method]; // 取出对应的方法
+    return func == null ? func : func.apply(value, args);
+  });
+};
+```
+
+可以注意到代码中针对 `method` 是函数的情况作了单独处理，当其为函数时直接调用它，可以通过 `this` 访问对应的元素。
+
+``` javascript
+_.invoke([1,2,3],function(){return this*2})
+=> [2, 4, 6]
+```
+
+### _.max/_.min
+
+``` javascript
+// Return the maximum element (or element-based computation).
+_.max = function(obj, iteratee, context) {
+  var result = -Infinity, lastComputed = -Infinity, // 初始值为无限小
+      value, computed;
+  if (iteratee == null && obj != null) { // 没有给定回调则直接取出元素
+    obj = isArrayLike(obj) ? obj : _.values(obj);
+    for (var i = 0, length = obj.length; i < length; i++) {
+      value = obj[i];
+      if (value > result) {
+        result = value;
+      }
+    }
+  } else {
+    iteratee = cb(iteratee, context);
+    _.each(obj, function(value, index, list) {
+      computed = iteratee(value, index, list); // 给定回调的情况下使用回调函数对每个取出的元素进行处理
+      if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
+        result = value;
+        lastComputed = computed;
+      }
+    });
+  }
+  return result;
+};
+```
+奇怪的是，这里前部分的遍历同样可以用 `_.each` 实现，这里却选择了前半部分使用 `for` 循环，后半部分使用 `_.each`。
+
+我尝试用下面的代码取代原代码，并且顺利的通过了测试：
+
+``` javascript
+_.max = function(obj, iteratee, context) {
+  var result = -Infinity, lastComputed = -Infinity,
+      computed;
+  // 判断 iteratee 更复杂了些，是因为后面的版本有更新
+  iteratee = !(iteratee == null || (typeof iteratee == 'number' && typeof obj[0] != 'object') && obj != null) && cb(iteratee, context);
+  _.each(obj, function(v, index, list) {
+    computed = iteratee ? iteratee(v, index, list) : v;
+    if (computed > lastComputed || computed === -Infinity && result === -Infinity) {
+      result = v;
+      lastComputed = computed;
+    }
+  });
+  return result;
+};
+```
+
+后来在 [#1448 Optimize _.max and _.min for performance](https://github.com/jashkenas/underscore/pull/1448) 看到应该是出于性能考虑。
+
+### _.shuffle
+
+洗牌，返回一个数组的随机洗牌（打乱顺序）拷贝。使用的是 [Fisher–Yates_shuffle](https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle) 算法。
+
+听起来很高端，其实非常简单，就是遍历整个数组，每次生成一个随机的 `index`，然后交换当前值和这个 `index` 对应的值。
+
+``` javascript
+_.shuffle = function(obj) {
+  var set = isArrayLike(obj) ? obj : _.values(obj);
+  var length = set.length;
+  var shuffled = Array(length);
+  for (var index = 0, rand; index < length; index++) {
+    rand = _.random(0, index);
+    if (rand !== index) shuffled[index] = shuffled[rand];
+    shuffled[rand] = set[index];
+  }
+  return shuffled;
+};
+```
+
+这里非常有意思的一个问题是： **如何测试洗牌程序？** 因为洗牌的结果是随机的，所以看起来似乎没有什么好的办法进行测试。我们可以看到 `underscore` 里选择测试了一些和随机无关（可测试）的特性，例如不改变元素的内容，以及几乎不可能出现不改变顺序的情况。
+
+``` javascript
+QUnit.test('shuffle', function(assert) {
+  assert.deepEqual(_.shuffle([1]), [1], 'behaves correctly on size 1 arrays');
+  var numbers = _.range(20);
+  var shuffled = _.shuffle(numbers);
+  assert.notDeepEqual(numbers, shuffled, 'does change the order'); // Chance of false negative: 1 in ~2.4*10^18 （不改变顺序的可能性非常小）
+  assert.notStrictEqual(numbers, shuffled, 'original object is unmodified');
+  assert.deepEqual(numbers, _.sortBy(shuffled), 'contains the same members before and after shuffle');
+
+  shuffled = _.shuffle({a: 1, b: 2, c: 3, d: 4});
+  assert.equal(shuffled.length, 4);
+  assert.deepEqual(shuffled.sort(), [1, 2, 3, 4], 'works on objects'); // 重新排序后和原来一致
+});
+```
+随后我看到一篇关于测试洗牌程序的文章：[如何测试洗牌程序 | 酷 壳 - CoolShell.cn](http://coolshell.cn/articles/8593.html)
+
+但是文章里介绍的方法对于单元测试显然是太慢了，不适合在单元测试中采用。
+
+### _.sample
+
+返回一个集合中的 `n` 个随机值。
+
+``` javascript
+// Sample **n** random values from a collection.
+// If **n** is not specified, returns a single random element.
+// The internal `guard` argument allows it to work with `map`.
+_.sample = function(obj, n, guard) {
+  if (n == null || guard) {
+    if (!isArrayLike(obj)) obj = _.values(obj);
+    return obj[_.random(obj.length - 1)];
+  }
+  return _.shuffle(obj).slice(0, Math.max(0, n));
+};
+```
+
+其实本来是个挺简单的函数，但是这里的 `guard` 有点令人疑惑。`guard` 未在文档中描述，似乎只有内部使用，注释中则强调是使其 **work with `map`**。举个例子：
+
+``` javascript
+_.map([[1, 2], [3, 4]], _.sample);
+```
+
+其中 `_.map` 传递的参数为
+
+``` javascript
+_.map([[1, 2], [3, 4]], function(val, key, obj) {
+    // val = [1, 2], [3, 4]
+    // key = 0, 1
+    // obj = [[1, 2], [3, 4]]
+});
+```
+
+而事实上 `key` 却被 `_.sample` 当成了 `n`，这里正好还都是数字，无法通过类型来排除。于是 `underscore` 采取的做法是检测到第三个参数的存在时（被 `map` 调用了）即无视 `n`，这样来保证和 `_.map` 能够一起工作。
+
+### _.sortBy
+
+``` javascript
+// Sort the object's values by a criterion produced by an iteratee.
+_.sortBy = function(obj, iteratee, context) {
+  iteratee = cb(iteratee, context);
+  return _.pluck(_.map(obj, function(value, index, list) {
+    return {
+      value: value,
+      index: index,
+      criteria: iteratee(value, index, list)
+    };
+  }).sort(function(left, right) {
+    var a = left.criteria;
+    var b = right.criteria;
+    if (a !== b) {
+      if (a > b || a === void 0) return 1;
+      if (a < b || b === void 0) return -1;
+    }
+    return left.index - right.index;
+  }), 'value');
+};
+```
+
+其中对 `_.pluck` 和 `_.map` 的组合运用比较有意思，先用 `_.map` 将原数组或者对象 wrap 一层，在完成排序后再通过 `_.pluck` 取出各个元素的 `value` 属性并返回。
+
+### _.groupBy/_.indexBy/_.countBy
+
+``` javascript
+// An internal function used for aggregate "group by" operations.
+var group = function(behavior) {
+  return function(obj, iteratee, context) {
+    var result = {};
+    iteratee = cb(iteratee, context);
+    // 遍历并将 result 的引用和遍历的元素传递给迭代函数
+    _.each(obj, function(value, index) {
+      var key = iteratee(value, index, obj);
+      behavior(result, value, key);
+    });
+    return result;
+  };
+};
+
+// _.groupBy([1.3, 2.1, 2.4], function(num){ return Math.floor(num); });
+// => {1: [1.3], 2: [2.1, 2.4]}
+_.groupBy = group(function(result, value, key) {
+  
+  // 根据返回值决定分到哪个key下面，若不存在此key则创建
+  if (_.has(result, key)) result[key].push(value); else result[key] = [value];
+});
+
+// var stooges = [{name: 'moe', age: 40}, {name: 'larry', age: 50}, {name: 'curly', age: 60}];
+// _.indexBy(stooges, 'age');
+// => {
+//   "40": {name: 'moe', age: 40},
+//   "50": {name: 'larry', age: 50},
+//   "60": {name: 'curly', age: 60}
+// }
+// 根据特定的 key 进行分类
+_.indexBy = group(function(result, value, key) {
+  result[key] = value;
+});
+
+// _.countBy([1, 2, 3, 4, 5], function(num) {
+//   return num % 2 == 0 ? 'even': 'odd';
+// });
+// => {odd: 3, even: 2}
+_.countBy = group(function(result, value, key) {
+  if (_.has(result, key)) result[key]++; else result[key] = 1;
+});
+```
+
+这里创建了一个内部函数 `group` 用于创造各种分组函数，和 `map` 的主要区别是这里的 `result` 会传递给迭代函数，将结果交给迭代函数处理。
+
+### _.toArray
+
+``` javascript
+// Safely create a real, live array from anything iterable.
+_.toArray = function(obj) {
+  if (!obj) return [];
+  if (_.isArray(obj)) return slice.call(obj);
+  if (isArrayLike(obj)) return _.map(obj, _.identity);
+  return _.values(obj);
+};
+```
+
+将可迭代对象转化为 `Array`，一般来说我们都是直接用 `Array.prototype.slice.call(obj)` 即可，但是针对 `isArrayLike` 使用了 `map`。
+
+然而我将其替换为 `if (_.isArray(obj) || isArrayLike(obj)) return slice.call(obj);` 仍然成功通过了测试。
+
+通过 blame 看到 [toArray: only call Array.prototype.slice on actual arrays. · jashkenas/underscore@26a3055](https://github.com/jashkenas/underscore/commit/26a30551f912f8180e6c2381d0eae4b24259fb70)，又是万恶的 IE 导致的。
+
+当 IE8 下对 NodeList（ArrayLike）使用 `Array.prototype.slice.call` 时会报错：`JScript object expected`。
 
 本文将持续更新。。
